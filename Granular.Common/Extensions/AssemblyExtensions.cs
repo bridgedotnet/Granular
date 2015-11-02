@@ -16,13 +16,13 @@ namespace Granular.Extensions
 
             if (attributesCache.TryGetValue(assembly.FullName, out attributes))
             {
-                return attributes.OfType<T>().Cast<T>();
+                return attributes.OfType<T>();
             }
 
             attributes = assembly.GetCustomAttributes(false) ?? new object[0];
 
             attributesCache.Add(assembly.FullName, attributes);
-            return attributes.OfType<T>().Cast<T>();
+            return attributes.OfType<T>();
         }
 
         public static T FirstOrDefaultCustomAttributeCached<T>(this Assembly assembly)
