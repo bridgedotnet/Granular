@@ -229,7 +229,7 @@ namespace System.Windows.Controls.Primitives
         {
             if (oldValue != null)
             {
-                oldValue.CanExecuteChanged += UpdateCommandStatus;
+                oldValue.CanExecuteChanged -= UpdateCommandStatus;
             }
             if (newValue != null)
             {
