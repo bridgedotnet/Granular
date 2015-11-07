@@ -43,6 +43,21 @@ namespace System.Windows.Controls.Primitives
             set { SetValue(IsPressedProperty, value); }
         }
 
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(ButtonBase), 
+            new FrameworkPropertyMetadata(null, (sender, e) => ((ButtonBase)sender).OnCommandChanged((ICommand)e.OldValue, (ICommand)e.NewValue)));
+        public ICommand Command
+        {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register("CommandParameterProperty", typeof(object), typeof(ButtonBase), new FrameworkPropertyMetadata());
+        public object CommandParameter
+        {
+            get { return GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+
         private IDisposable keyboardFocus;
 
         static ButtonBase()
@@ -68,7 +83,11 @@ namespace System.Windows.Controls.Primitives
 
         protected virtual void OnClick(RoutedEventArgs e)
         {
-            //
+            var command = Command;
+            if (command != null)
+            {
+                command.Execute(CommandParameter);
+            }
         }
 
         protected virtual void OnIsPressedChanged(DependencyPropertyChangedEventArgs e)
@@ -204,6 +223,23 @@ namespace System.Windows.Controls.Primitives
         private static bool IsVisualChild(Visual parent, Visual child)
         {
             return child != null && (parent == child || IsVisualChild(parent, child.VisualParent));
+        }
+
+        private void OnCommandChanged(ICommand oldValue, ICommand newValue)
+        {
+            if (oldValue != null)
+            {
+                oldValue.CanExecuteChanged -= UpdateCommandStatus;
+            }
+            if (newValue != null)
+            {
+                newValue.CanExecuteChanged += UpdateCommandStatus;
+                UpdateCommandStatus(this, EventArgs.Empty);
+            }
+        }
+        private void UpdateCommandStatus(object sender, EventArgs e)
+        {
+            IsEnabled = Command.CanExecute(CommandParameter);
         }
     }
 }

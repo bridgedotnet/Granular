@@ -697,6 +697,7 @@
     <Compile Include="..\Granular.Presentation\Window.cs">
       <Link>Window.cs</Link>
     </Compile>
+    <Compile Include="Input\ICommand.cs" />
     <Compile Include="Media\Animation\ColorAnimation.cs" />
     <Compile Include="Media\Animation\RectAnimation.cs" />
     <Compile Include="Media\Animation\ThicknessAnimation.cs" />
