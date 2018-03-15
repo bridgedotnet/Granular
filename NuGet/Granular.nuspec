@@ -10,8 +10,8 @@
         <description>WPF for JavaScript</description>
         <tags>granular bridge wpf xaml javascript</tags>
         <dependencies>
-            <dependency id="Bridge.Min" version="16.3.2" />
-            <dependency id="Bridge.Html5" version="16.3.2" />
+            <dependency id="Bridge.Min" version="16.8.2" />
+            <dependency id="Bridge.Html5" version="16.8.2" />
         </dependencies>
     </metadata>
     <files>
@@ -20,12 +20,10 @@
         <file src="$SolutionDir$Granular.BuildTasks\bin\$Configuration$\Granular.targets" target="build\Granular.targets" />
         <file src="$SolutionDir$Granular.BuildTasks\bin\$Configuration$\ProjectLink.targets" target="build\ProjectLink.targets" />
         <file src="$SolutionDir$Granular.Common\bin\$Configuration$\Granular.Common.dll" target="build\Granular.Common.dll" />
-
         <file src="$SolutionDir$Granular.Common.Web\bin\$Configuration$\Granular.Common.dll" target="lib\net45\Granular.Common.dll" />
         <file src="$SolutionDir$Granular.Host.Web\bin\$Configuration$\Granular.Host.dll" target="lib\net45\Granular.Host.dll" />
         <file src="$SolutionDir$Granular.Presentation.Web\bin\$Configuration$\Granular.Presentation.dll" target="lib\net45\Granular.Presentation.dll" />
         <file src="$SolutionDir$Granular.Presentation.Generic.Web\bin\$Configuration$\Granular.Presentation.Generic.dll" target="lib\net45\Granular.Presentation.Generic.dll" />
-        
         <file src="ProjectLink.targets.template" target="tools\ProjectLink.targets.template" />
         <file src="install.ps1" target="tools\install.ps1" />
     </files>
