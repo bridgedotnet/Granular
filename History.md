@@ -1,6 +1,10 @@
 What's new
 ==========
 
+
+**0.4.0**
+- Upgrade to Bridge.NET 17.0
+
 **0.3.0**
 - DrawingContext
 - Geometry
