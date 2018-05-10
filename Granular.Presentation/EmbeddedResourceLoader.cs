@@ -112,13 +112,14 @@ namespace System.Windows
         public static object LoadResourceElement(Uri resourceUri)
         {
             VerifyResourceUri(resourceUri);
-
-            return resourceElementCache.GetValue(resourceUri);
+            var o = resourceElementCache.GetValue(resourceUri);
+            return o;
         }
 
         private static object ResolveResourceElement(Uri resourceUri)
         {
             string resourceString = Granular.Compatibility.String.FromByteArray(resourceDataCache.GetValue(resourceUri));
+
             return XamlLoader.Load(XamlParser.Parse(resourceString, resourceUri));
         }
 

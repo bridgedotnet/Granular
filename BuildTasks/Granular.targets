@@ -1,0 +1,75 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <PrepareResourcesDependsOn>
+      AddXamlEmbeddedResource;
+      ExcludeXamlItems;
+      $(PrepareResourcesDependsOn);
+      IncludeXamlItems
+    </PrepareResourcesDependsOn>
+  </PropertyGroup>
+
+  <Target Name="ExcludeXamlItems">
+    <ItemGroup>
+      <ExcludedPage Include="@(Page)"/>
+      <ExcludedApplicationDefinition Include="@(ApplicationDefinition)"/>
+
+      <Page Remove="@(Page)"/>
+      <ApplicationDefinition Remove="@(ApplicationDefinition)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="IncludeXamlItems">
+    <ItemGroup>
+      <Page Include="@(ExcludedPage)"/>
+      <ApplicationDefinition Include="@(ExcludedApplicationDefinition)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AddXamlEmbeddedResource">
+    <ItemGroup>
+      <EmbeddedResource Include="@(Page)" />
+      <EmbeddedResource Include="@(ApplicationDefinition)" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <AvailableItemName Include="Page" />
+    <AvailableItemName Include="ApplicationDefinition" />
+  </ItemGroup>
+
+  <UsingTask TaskName="Granular.BuildTasks.CompileXaml" AssemblyFile="Granular.BuildTasks.dll" />
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      XamlCompilation;
+      $(CoreCompileDependsOn)
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="XamlCompilation" Condition="'@(Page)' != '' Or '@(ApplicationDefinition)' != '' " >
+    <CompileXaml
+      TargetName="$(TargetName)"
+      ProjectPath="$(ProjectPath)"
+      Language="$(Language)"
+      LanguageSourceExtension="$(DefaultLanguageSourceExtension)"
+      OutputPath="$(OutputPath)"
+      IntermediateOutputPath="$(IntermediateOutputPath)"
+      RootNamespace="$(RootNamespace)"
+      XamlApplications="@(ApplicationDefinition)"
+      XamlPages="@(Page)"
+      ReferenceAssemblies ="@(ReferencePath)"
+      AttachDebugger="False">
+
+      <Output ItemName="FileWrites" TaskParameter="GeneratedCodeFiles" />
+      <Output ItemName="GranularXamlGeneratedCodeFiles" TaskParameter="GeneratedCodeFiles" />
+    </CompileXaml>
+
+    <Message Text="GranularXamlGeneratedCodeFiles: @(GranularXamlGeneratedCodeFiles)" Importance="High"/>
+
+    <ItemGroup>
+      <Compile Include="@(GranularXamlGeneratedCodeFiles)"/>
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -21,6 +21,14 @@ namespace System.Windows
         {
             if (context == null)
             {
+                if (resourceKey is Type)
+                {
+                    // TODO: I guess this is a default resource
+                    object defaultResource;
+                    if (Application.Current.TryGetResource(new StyleKey((Type)resourceKey), out defaultResource))
+                        return defaultResource;
+                }
+
                 throw new Granular.Exception("StaticResource \"{0}\" was not found", resourceKey);
             }
 

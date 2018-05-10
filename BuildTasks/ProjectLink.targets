@@ -1,0 +1,46 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="Granular.BuildTasks.ProjectLinkTask" AssemblyFile="Granular.BuildTasks.dll" />
+
+  <Target Name="SetProjectLink" BeforeTargets="PrepareForBuild" Condition=" '$(ProjectLinkSource)' != '' ">
+    <ProjectLinkTask
+      SourceProjectPath="$(ProjectLinkSource)"
+      ProjectPath="$(ProjectPath)"
+
+      CompileItems="@(Compile)"
+      PageItems="@(Page)"
+      ApplicationDefinitionItems="@(ApplicationDefinition)"
+      ResourceItems="@(Resource)"
+      EmbeddedResourceItems="@(EmbeddedResource)"
+
+      ExcludeItems="@(ProjectLinkExcludeItem)"
+      RewriteProject="$(ProjectLinkRewriteProject)"
+      AttachDebugger="False">
+
+      <Output TaskParameter="OutputCompileItems" ItemName="ProjectLinkCompileItems"/>
+      <Output TaskParameter="OutputPageItems" ItemName="ProjectLinkPageItems"/>
+      <Output TaskParameter="OutputApplicationDefinitionItems" ItemName="ProjectLinkApplicationDefinitionItems"/>
+      <Output TaskParameter="OutputResourceItems" ItemName="ProjectLinkResourceItems"/>
+      <Output TaskParameter="OutputEmbeddedResourceItems" ItemName="ProjectLinkEmbeddedResourceItems"/>
+    </ProjectLinkTask>
+
+    <Message Text="ProjectLink - Linking to $(ProjectLinkSource)" Importance="High"/>
+
+    <ItemGroup>
+      <Compile Remove="@(Compile)"/>
+      <Compile Include="@(ProjectLinkCompileItems)"/>
+
+      <Page Remove="@(Page)"/>
+      <Page Include="@(ProjectLinkPageItems)"/>
+
+      <ApplicationDefinition Remove="@(ApplicationDefinition)"/>
+      <ApplicationDefinition Include="@(ProjectLinkApplicationDefinitionItems)"/>
+
+      <Resource Remove="@(Resource)"/>
+      <Resource Include="@(ProjectLinkResourceItems)"/>
+
+      <EmbeddedResource Remove="@(EmbeddedResource)"/>
+      <EmbeddedResource Include="@(ProjectLinkEmbeddedResourceItems)"/>
+    </ItemGroup>
+  </Target>
+</Project>

@@ -47,6 +47,8 @@
     <Compile Include="Condition.cs" />
     <Compile Include="ContentElement.cs" />
     <Compile Include="Controls\ClickMode.cs" />
+    <Compile Include="Controls\ComboBox.cs" />
+    <Compile Include="Controls\ComboBoxItem.cs" />
     <Compile Include="Controls\ItemContainerGenerator.cs" />
     <Compile Include="Markup\DeferredValueKeyProvider.cs" />
     <Compile Include="Documents\Adorner.cs" />
@@ -77,6 +79,8 @@
     <Compile Include="FrameworkContentElement.cs" />
     <Compile Include="Input\KeyboardNavigation.cs" />
     <Compile Include="Input\KeyboardNavigationTarget.cs" />
+    <Compile Include="Markup\TypeExtension.cs" />
+    <Compile Include="Markup\StaticExtension.cs" />
     <Compile Include="Markup\UriContext.cs" />
     <Compile Include="Media\DrawingContext.cs" />
     <Compile Include="Media\EllipseGeometry.cs" />

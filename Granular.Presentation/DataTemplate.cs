@@ -46,13 +46,13 @@ namespace System.Windows
             XamlMember keyMember = element.Members.SingleOrDefault(member => member.Name.LocalName == "Key");
             if (keyMember != null)
             {
-                return ElementFactory.FromValue(keyMember.Values.Single(), typeof(object), element.Namespaces, element.SourceUri).CreateElement(new InitializeContext());
+                return ElementFactory.FromValue(keyMember.Values.Single(), typeof(object), element.Namespaces, element.SourceUri).CreateElement(new InitializeContext(element.Namespaces));
             }
 
             XamlMember dataTypeMember = element.Members.SingleOrDefault(member => member.Name.LocalName == "DataType");
             if (dataTypeMember != null)
             {
-                return new TemplateKey((Type)ElementFactory.FromValue(dataTypeMember.Values.Single(), typeof(Type), element.Namespaces, element.SourceUri).CreateElement(new InitializeContext()));
+                return new TemplateKey((Type)ElementFactory.FromValue(dataTypeMember.Values.Single(), typeof(Type), element.Namespaces, element.SourceUri).CreateElement(new InitializeContext(element.Namespaces)));
             }
 
             throw new Granular.Exception($"Can't create value key from \"{element.Name}\"");

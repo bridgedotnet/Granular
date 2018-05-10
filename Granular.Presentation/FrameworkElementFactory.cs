@@ -24,7 +24,7 @@ namespace System.Windows
 
         public FrameworkElement CreateElement(FrameworkElement templatedParent)
         {
-            InitializeContext elementContext = new InitializeContext(null, context, new NameScope(context.NameScope), templatedParent, BaseValueSource.ParentTemplate);
+            InitializeContext elementContext = new InitializeContext(null, context, new NameScope(context.NameScope), templatedParent, BaseValueSource.ParentTemplate, context.XamlNamespaces);
 
             FrameworkElement element = elementFactory.CreateElement(elementContext) as FrameworkElement;
 

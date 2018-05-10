@@ -60,7 +60,10 @@ namespace System.Windows
 
             string themeResourcesAssemblyName = themeInfoAttribute.GenericDictionaryLocation == ResourceDictionaryLocation.SourceAssembly ? assembly.GetName().Name : String.Format("{0}.{1}", assembly.GetName().Name, ThemeName);
 
-            value = (ResourceDictionary)EmbeddedResourceLoader.LoadResourceElement(Granular.Compatibility.Uri.CreateAbsoluteUri(String.Format("pack://application:,,,/{0};component/Themes/{1}.xaml", themeResourcesAssemblyName, ThemeNameAndColor)));
+            var e = String.Format("pack://application:,,,/{0};component/Themes/{1}.xaml", themeResourcesAssemblyName,
+                ThemeNameAndColor);
+
+            value = (ResourceDictionary)EmbeddedResourceLoader.LoadResourceElement(Granular.Compatibility.Uri.CreateAbsoluteUri(e));
             return true;
         }
 

@@ -7,6 +7,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type TextBox}">
+        <Setter Property="MinHeight" Value="20"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
@@ -16,7 +17,8 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border Background="{TemplateBinding Control.Background}"
                             BorderBrush="{TemplateBinding Control.BorderBrush}"
-                            BorderThickness="{TemplateBinding Control.BorderThickness}">
+                            BorderThickness="{TemplateBinding Control.BorderThickness}"
+                            Padding="{TemplateBinding Control.Padding}">
 
                         <Decorator x:Name="PART_ContentHost" Control.Foreground="{TemplateBinding Control.Foreground}"/>
                     </Border>

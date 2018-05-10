@@ -67,6 +67,12 @@
     <Compile Include="..\Granular.Presentation\Controls\ClickMode.cs">
       <Link>Controls\ClickMode.cs</Link>
     </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\ComboBox.cs">
+      <Link>Controls\ComboBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\ComboBoxItem.cs">
+      <Link>Controls\ComboBoxItem.cs</Link>
+    </Compile>
     <Compile Include="..\Granular.Presentation\Controls\ContentControl.cs">
       <Link>Controls\ContentControl.cs</Link>
     </Compile>
@@ -435,6 +441,9 @@
     </Compile>
     <Compile Include="..\Granular.Presentation\Markup\PropertyPathParser.cs">
       <Link>Markup\PropertyPathParser.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Markup\StaticExtension.cs">
+      <Link>Markup\StaticExtension.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Markup\SupportInitialize.cs">
       <Link>Markup\SupportInitialize.cs</Link>
