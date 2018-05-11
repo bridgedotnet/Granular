@@ -1,5 +1,9 @@
 {
-    "fileName":  "Granular.Presentation.js",
-    "outputBy": "Project",
-    "fileNameCasing": "None",
+  "fileName": "Granular.Presentation.js",
+  "outputBy": "Project",
+  "fileNameCasing": "None",
+  "rules": {
+    //"externalCast": "Plain",
+    "inlineComment": "Plain"
+  }
 }

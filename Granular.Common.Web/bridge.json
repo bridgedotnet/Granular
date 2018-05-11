@@ -3,7 +3,7 @@
   "outputBy": "Project",
   "fileNameCasing": "None",
   "rules": {
-    "externalCast": "Plain",
+    //"externalCast": "Plain",
     "inlineComment": "Plain"
   }
 }
