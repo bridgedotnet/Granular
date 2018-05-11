@@ -295,11 +295,9 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     var sin = direction.Y / directionLength;
                     var cos = direction.X / directionLength;
 
-                    // generated gradient image size
                     var generatedImageWidth = Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.Width + Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.Height;
                     var generatedImageHeight = Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.Width + Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.Height;
 
-                    // transformation from a unit square to the generated gradient image rectangle
                     var matrix = System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.TranslationMatrix(-0.5, -0.5), System.Windows.Media.Matrix.ScalingMatrix(generatedImageWidth, generatedImageHeight)), new System.Windows.Media.Matrix(cos, sin, -sin, cos, 0, 0)), System.Windows.Media.Matrix.TranslationMatrix(targetSize.Width / 2, targetSize.Height / 2)); // translate to the target rectangle center
 
                     var relativeStart = System.Windows.Media.Matrix.op_Multiply$1(startPoint, matrix.Inverse);
@@ -1182,12 +1180,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     this.OnUnload();
                 }
             },
-            OnLoad: function () {
-                //
-            },
-            OnUnload: function () {
-                //
-            }
+            OnLoad: function () { },
+            OnUnload: function () { }
         }
     });
 
@@ -1883,7 +1877,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 Granular.Host.Render.HtmlRenderElement.$ctor1.call(this, document.createElement("div"));
-                //
             },
             $ctor1: function (htmlElement) {
                 this.$initialize();
@@ -1907,12 +1900,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 this.IsLoaded = false;
                 this.OnUnload();
             },
-            OnLoad: function () {
-                //
-            },
-            OnUnload: function () {
-                //
-            }
+            OnLoad: function () { },
+            OnUnload: function () { }
         }
     });
 
@@ -1961,9 +1950,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
 
                 this.svgDefinitionContainer.Remove(this);
             },
-            OnOpacityChanged: function () {
-                //
-            }
+            OnOpacityChanged: function () { }
         }
     });
 
@@ -2795,13 +2782,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 Granular.Host.SvgElementExtensions.SetSvgFontStyle(this.HtmlElement, this.FormattedText.Typeface.Style, this.converter);
                 Granular.Host.SvgElementExtensions.SetSvgFontWeight(this.HtmlElement, this.FormattedText.Typeface.Weight, this.converter);
                 Granular.Host.SvgElementExtensions.SetSvgFontSize(this.HtmlElement, this.FormattedText.Size, this.converter);
-                //HtmlElement.SetSvgFlowDirection(FormattedText.FlowDirection, converter);
-                //HtmlElement.SetSvgLineHeight(FormattedText.LineHeight, converter;
-                //HtmlElement.SetSvgLineCount(FormattedText.MaxLineCount, converter);
-                //HtmlElement.SetSvgMaxHeight(FormattedText.MaxTextHeight, converter);
-                //HtmlElement.SetSvgMaxWidth(FormattedText.MaxTextWidth, converter);
-                //HtmlElement.SetSvgTextAlignment(FormattedText.TextAlignment, converter);
-                //HtmlElement.SetSvgTextTrimming(FormattedText.Trimming);
                 this.HtmlElement.textContent = this.FormattedText.Text;
             }
         }
@@ -4329,6 +4309,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     var htmlElement = document.createElement(Granular.Host.Render.HtmlVisualRenderElement.GetElementTagName(owner));
 
                     var htmlElementId = Granular.Host.Render.HtmlVisualRenderElement.GetElementId(owner);
+
                     if (!Granular.Extensions.StringExtensions.IsNullOrEmpty(htmlElementId)) {
                         htmlElement.id = htmlElementId;
                     }
