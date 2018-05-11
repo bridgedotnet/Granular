@@ -229,7 +229,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 if (!this.entries.TryGetValue(dependencyProperty, entry)) {
                     var propertyMetadata = dependencyProperty.GetMetadata(Bridge.getType(this));
 
-                    // no need to create a new entry if the value is not inherited or coerced
                     if (!propertyMetadata.Inherits && (Bridge.staticEquals(propertyMetadata.CoerceValueCallback, null) || !dependencyProperty.IsAttached && !dependencyProperty.IsContainedBy(Bridge.getType(this)))) {
                         return propertyMetadata.DefaultValue;
                     }
@@ -258,7 +257,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 var newExpressionProvider = Bridge.as(value, System.Windows.IExpressionProvider);
                 if (newExpressionProvider == null && !dependencyProperty.IsValidValue(value)) {
-                    return; // invalid value
+                    return;
                 }
 
                 var entry = this.GetInitializedValueEntry(dependencyProperty);
@@ -268,12 +267,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 if (newExpressionProvider != null) {
                     value = newExpressionProvider.System$Windows$IExpressionProvider$CreateExpression(this, dependencyProperty);
                 } else if (oldExpression != null && oldExpression.System$Windows$IExpression$SetValue(value)) {
-                    return; // value (current or not) was set in the existing expression, nothing else to do
+                    return;
                 }
 
                 if (setCurrentValue) {
                     System.Windows.DependencyPropertyValueEntryExtensions.SetCurrentValue(entry, value);
-                    return; // base value isn't changed
+                    return;
                 }
 
                 if (Bridge.is(oldExpression, System.IDisposable)) {
@@ -386,9 +385,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.OnPropertyChanged(e);
                 System.Windows.DependencyPropertyChangedEventHandlerExtensions.Raise(this.PropertyChanged, this, e);
             },
-            OnPropertyChanged: function (e) {
-                //
-            },
+            OnPropertyChanged: function (e) { },
             SetInheritanceParent: function (parent) {
                 var $t, $t1, $t2;
                 if (Bridge.referenceEquals(this.inheritanceParent, parent)) {
@@ -408,7 +405,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
 
                 if (this.inheritanceParent == null) {
-                    // clear inherited values
                     $t = Bridge.getEnumerator(this.entries.GetKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
                     try {
                         while ($t.moveNext()) {
@@ -422,7 +418,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                             $t.System$IDisposable$Dispose();
                         }
                     }} else {
-                    // update existing inherited values
                     $t1 = Bridge.getEnumerator(this.entries.GetKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
                     try {
                         while ($t1.moveNext()) {
@@ -436,7 +431,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                             $t1.System$IDisposable$Dispose();
                         }
                     }
-                    // add missing inherited values
                     $t2 = Bridge.getEnumerator(this.inheritanceParent.entries.GetKeyValuePairs(), System.Collections.Generic.KeyValuePair$2(System.Windows.DependencyProperty,System.Windows.IDependencyPropertyValueEntry));
                     try {
                         while ($t2.moveNext()) {
@@ -453,9 +447,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 this.OnInheritanceParentChanged(oldInheritanceParent, this.inheritanceParent);
             },
-            OnInheritanceParentChanged: function (oldInheritanceParent, newInheritanceParent) {
-                //
-            },
+            OnInheritanceParentChanged: function (oldInheritanceParent, newInheritanceParent) { },
             OnParentPropertyChanged: function (sender, e) {
                 if (e.Property.Inherits) {
                     System.Windows.DependencyPropertyValueEntryExtensions.SetBaseValue(this.GetInitializedValueEntry(e.Property), System.Windows.BaseValueSource.Inherited, e.NewValue);
@@ -1114,10 +1106,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var targetOrigin = this.GetTargetOrigin(targetArea);
                 var popupAlignmentPoint = this.GetPopupAlignmentPoint(popupSize);
 
-                // calculate initial position
                 var position = System.Windows.Controls.Primitives.Placement.PlacementBase.GetPosition(targetOrigin, popupAlignmentPoint, offset);
 
-                // check edges overflow and get alternative origin and alignment points
                 if (position.X < containerBounds.Left) {
                     targetOrigin = this.GetLeftEdgeTargetOrigin(targetArea, targetOrigin);
                     popupAlignmentPoint = this.GetLeftEdgePopupAlignmentPoint(popupSize, popupAlignmentPoint);
@@ -1138,10 +1128,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     popupAlignmentPoint = this.GetBottomEdgePopupAlignmentPoint(popupSize, popupAlignmentPoint);
                 }
 
-                // recalculate position with the alternative origin and alignment points
                 position = System.Windows.Controls.Primitives.Placement.PlacementBase.GetPosition(targetOrigin, popupAlignmentPoint, offset);
 
-                // after the recalculation, overflow can occur from opposite edges if the containerBounds is too small, so apply bounds
                 return System.Windows.PointExtensions.Bounds(position, System.Windows.RectExtensions.GetTopLeft(containerBounds), System.Windows.Point.op_Subtraction(System.Windows.RectExtensions.GetBottomRight(containerBounds), System.Windows.Controls.Primitives.Placement.GetBottomRight(popupSize)));
             },
             GetTargetArea: function (targetObjectRect, placementRectangle, mouseBounds, containerBounds) {
@@ -1433,7 +1421,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function (uniformRadius) {
                 System.Windows.CornerRadius.$ctor1.call(this, uniformRadius, uniformRadius, uniformRadius, uniformRadius);
-                //
             },
             $ctor1: function (topLeft, topRight, bottomRight, bottomLeft) {
                 this.$initialize();
@@ -2128,10 +2115,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             RaiseMetadataPropertyChangedCallback: function (dependencyObject, e) {
                 var $t;
-                // metadata's changed callback will be raised for
-                // - the original owner metadata
-                // - every attached property metadata
-                // - every metadata that the currently changed object derives from its owner type
 
                 $t = Bridge.getEnumerator(this.GetOrderedTypeMetadata(), Function);
                 try {
@@ -2154,7 +2137,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }},
             GetOrderedTypeMetadata: function () {
                 if (this.orderedTypeMetadataCache == null) {
-                    // topological sorting, with the original owner type first, and each base class before all of its subclasses
                     var orderedTypes = Bridge.fn.bind(this, $asm.$.System.Windows.DependencyProperty.f3)(new (System.Collections.Generic.List$1(Function)).ctor());
                     var remainingTypes = System.Linq.Enumerable.from(this.typeMetadata.Granular$Collections$IMinimalDictionary$2$Function$System$Windows$PropertyMetadata$GetKeys()).where(Bridge.fn.bind(this, $asm.$.System.Windows.DependencyProperty.f4)).toList(Function);
 
@@ -2234,11 +2216,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             $ctor1: function (property, oldValue, newValue) {
                 System.Windows.DependencyPropertyChangedEventArgs.$ctor2.call(this, property, oldValue, newValue, false);
-                //
             },
             ctor: function (property, value) {
                 System.Windows.DependencyPropertyChangedEventArgs.$ctor2.call(this, property, value, value, true);
-                //
             },
             $ctor2: function (property, oldValue, newValue, isSubPropertyChange) {
                 this.$initialize();
@@ -2379,7 +2359,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             ctor: function (timeSpan) {
                 System.Windows.Duration.$ctor1.call(this, System.Windows.Duration.DurationType.TimeSpan, timeSpan);
-                //
             },
             $ctor1: function (durationType, timeSpan) {
                 this.$initialize();
@@ -2585,7 +2564,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -2834,19 +2812,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.PropertyMetadata.$ctor3.call(this, null, null, null);
-                //
             },
             $ctor1: function (defaultValue) {
                 System.Windows.PropertyMetadata.$ctor3.call(this, defaultValue, null, null);
-                //
             },
             $ctor4: function (propertyChangedCallback) {
                 System.Windows.PropertyMetadata.$ctor3.call(this, null, propertyChangedCallback, null);
-                //
             },
             $ctor2: function (defaultValue, propertyChangedCallback) {
                 System.Windows.PropertyMetadata.$ctor3.call(this, defaultValue, propertyChangedCallback, null);
-                //
             },
             $ctor3: function (defaultValue, propertyChangedCallback, coerceValueCallback) {
                 this.$initialize();
@@ -3002,13 +2976,11 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function (cursorType) {
                 System.Windows.Input.Cursor.$ctor1.call(this, cursorType, null, null);
-                //
             },
             $ctor2: function (imageSource, hotspot) {
                 if (hotspot === void 0) { hotspot = null; }
 
                 System.Windows.Input.Cursor.$ctor1.call(this, System.Windows.Input.CursorType.None, imageSource, hotspot);
-                //
             },
             $ctor1: function (cursorType, imageSource, hotspot) {
                 this.$initialize();
@@ -4078,7 +4050,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function (element) {
                 System.Windows.Input.KeyboardNavigationTarget.Stop.$ctor1.call(this, element, System.Windows.Input.KeyboardNavigation.GetTabIndex(element));
-                //
             },
             $ctor1: function (element, tabIndex) {
                 this.$initialize();
@@ -4303,7 +4274,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             AddUpdatedElement: function (element) {
                 var $t;
                 if (this.updateLayoutOperation == null || this.updateLayoutOperation.Status !== System.Windows.Threading.DispatcherOperationStatus.Executing) {
-                    // element was updated manually (not through the UpdateLayout loop)
                     $t = Bridge.getEnumerator(System.Windows.LayoutManager.GetElementPath(element), System.Windows.UIElement);
                     try {
                         while ($t.moveNext()) {
@@ -4730,7 +4700,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Markup.InitializeContext.$ctor1.call(this, null, null, new System.Windows.NameScope(), null, System.Windows.BaseValueSource.Local);
-                //
             },
             $ctor1: function (target, parentContext, nameScope, templatedParent, valueSource) {
                 this.$initialize();
@@ -7885,12 +7854,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     var w = containerSize.Width;
                     var h = containerSize.Height;
 
-                    // Each width unit of the contained size, will add "a" units to the transformed width and "b" units to the transformed height
                     var transformedWidth = System.Windows.PointExtensions.Abs((System.Windows.Media.Matrix.op_Multiply$1(new System.Windows.Point.$ctor1(1, 0), matrix)));
                     var a = transformedWidth.X;
                     var b = transformedWidth.Y;
 
-                    // Each height unit of the contained size, will add "c" units to the transformed width and "d" units to the transformed height
                     var transformedHeight = System.Windows.PointExtensions.Abs((System.Windows.Media.Matrix.op_Multiply$1(new System.Windows.Point.$ctor1(0, 1), matrix)));
                     var c = transformedHeight.X;
                     var d = transformedHeight.Y;
@@ -7899,23 +7866,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                         return System.Windows.Size.Zero;
                     }
 
-                    // Find a contained size (x, y) with maximum area (x * y) where
-                    //      w >= a * x + c * y
-                    //      h >= b * x + d * y
-                    //
-                    // The solution is on one of these constrains egeds (where the area derivative is zero) or in the intersection
-                    //
-                    // The area on the first constrain edge is:
-                    //      area1(x) = x * (w - a * x) / c
-                    //
-                    // The maximum is at:
-                    //      area1'(x) = (w - 2 * a * x) / c = 0
-                    //      x = w / (2 * a)
-                    //      y = Min((w - a * x) / c, (h - b * x) / d)
 
                     var determinant = a * d - b * c;
 
-                    // Intersection size
                     var size0 = determinant !== 0 ? new System.Windows.Size(Granular.Extensions.DoubleExtensions.Max(((w * d - h * c) / determinant), 0), Granular.Extensions.DoubleExtensions.Max(((h * a - w * b) / determinant), 0)) : new System.Windows.Size(0, 0);
 
                     var GetConstrainedX = function (y) {
@@ -7925,10 +7878,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                         return Math.min(Granular.Extensions.DoubleExtensions.IsClose(c, 0) ? 0 : (w - a * x) / c, Granular.Extensions.DoubleExtensions.IsClose(d, 0) ? 0 : (h - b * x) / d);
                     };
 
-                    // Maximum size on the first constrain edge
                     var size1 = a > c ? new System.Windows.Size(w / (2 * a), Granular.Extensions.DoubleExtensions.Max(GetConstrainedY(w / (2 * a)), 0)) : new System.Windows.Size(Granular.Extensions.DoubleExtensions.Max(GetConstrainedX(w / (2 * c)), 0), w / (2 * c));
 
-                    // Maximum size on the second constrain edge
                     var size2 = b > d ? new System.Windows.Size(h / (2 * b), Granular.Extensions.DoubleExtensions.Max(GetConstrainedY(h / (2 * b)), 0)) : new System.Windows.Size(Granular.Extensions.DoubleExtensions.Max(GetConstrainedX(h / (2 * d)), 0), h / (2 * d));
 
                     return System.Windows.SizeExtensions.MaxArea(System.Windows.SizeExtensions.MaxArea(size0, size1), size2);
@@ -8049,7 +8000,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 if (stretch === void 0) { stretch = 0; }
 
                 System.Windows.Media.Typeface.$ctor1.call(this, new System.Windows.Media.FontFamily.$ctor1(typefaceName), style, weight, stretch);
-                //
             },
             $ctor1: function (fontFamily, style, weight, stretch) {
                 if (style === void 0) { style = 0; }
@@ -9101,7 +9051,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Attribute.ctor.call(this);
-                //
             },
             $ctor1: function (name, type) {
                 System.Windows.TemplatePartAttribute.ctor.call(this);
@@ -9121,7 +9070,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Attribute.ctor.call(this);
-                //
             },
             $ctor1: function (groupName, name) {
                 System.Windows.TemplateVisualStateAttribute.ctor.call(this);
@@ -9171,7 +9119,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             $ctor1: function (themeDictionaryLocation, genericDictionaryLocation) {
                 System.Windows.ThemeInfoAttribute.ctor.call(this, genericDictionaryLocation);
-                //
             },
             ctor: function (genericDictionaryLocation) {
                 this.$initialize();
@@ -9334,7 +9281,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     action();
                     return null;
                 }, priority);
-                //
             },
             $ctor1: function (action, priority) {
                 this.$initialize();
@@ -9457,7 +9403,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             ctor: function () {
                 System.Windows.Threading.DispatcherTimer.$ctor1.call(this, System.Windows.Threading.Dispatcher.CurrentDispatcher, System.Windows.ApplicationHost.Current.System$Windows$IApplicationHost$TaskScheduler, System.TimeSpan.fromSeconds(1), System.Windows.Threading.DispatcherPriority.Normal);
-                //
             },
             $ctor1: function (dispatcher, scheduler, interval, priority) {
                 this.$initialize();
@@ -9723,12 +9668,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 value.v = null;
                 return false;
             },
-            OnStartup: function (e) {
-                //
-            },
-            OnLoadCompleted: function () {
-                //
-            }
+            OnStartup: function (e) { },
+            OnLoadCompleted: function () { }
         }
     });
 
@@ -9779,7 +9720,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.DependencyObject.ctor.call(this);
-                //
             }
         }
     });
@@ -10092,9 +10032,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                         $t.System$IDisposable$Dispose();
                     }
                 }},
-            OnVisualParentChanged: function (oldVisualParent, newVisualParent) {
-                //
-            },
+            OnVisualParentChanged: function (oldVisualParent, newVisualParent) { },
             OnVisualAncestorChanged: function () {
                 this.visualLevel = -1;
             },
@@ -10144,12 +10082,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             CreateRenderElementContentOverride: function (factory) {
                 return null;
             },
-            OnVisualBoundsChanged: function () {
-                //
-            },
-            OnVisualTransformChanged: function () {
-                //
-            },
+            OnVisualBoundsChanged: function () { },
+            OnVisualTransformChanged: function () { },
             OnVisualTransformValueChanged: function (sender, e) {
                 this.InvalidateHitTestBounds();
 
@@ -10396,7 +10330,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -10433,7 +10366,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -10796,9 +10728,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.listBox.SetSelectionAnchor(item);
                 this.listBox.ToggleSelection(item);
             },
-            SetFocusChangeSelection: function (item, modifiers) {
-                //
-            }
+            SetFocusChangeSelection: function (item, modifiers) { }
         }
     });
 
@@ -10887,7 +10817,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (routedEvent, originalSource) {
                 this.$initialize();
                 System.Windows.RoutedEventArgs.ctor.call(this, routedEvent, originalSource);
-                //
             }
         },
         methods: {
@@ -11339,7 +11268,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (routedEvent, originalSource) {
                 this.$initialize();
                 System.Windows.RoutedEventArgs.ctor.call(this, routedEvent, originalSource);
-                //
             }
         },
         methods: {
@@ -11595,15 +11523,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             $ctor2: function (propertyPath) {
                 System.Windows.Data.ObservableExpression.$ctor1.call(this, null, System.Windows.PropertyPath.Parse(propertyPath));
-                //
             },
             ctor: function (baseValue, propertyPath) {
                 System.Windows.Data.ObservableExpression.$ctor1.call(this, baseValue, System.Windows.PropertyPath.Parse(propertyPath));
-                //
             },
             $ctor3: function (propertyPath) {
                 System.Windows.Data.ObservableExpression.$ctor1.call(this, null, propertyPath);
-                //
             },
             $ctor1: function (baseValue, propertyPath) {
                 this.$initialize();
@@ -11766,7 +11691,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Data.ObservableValue.$ctor1.call(this, System.Windows.Data.ObservableValue.UnsetValue);
-                //
             },
             $ctor1: function (baseValue) {
                 this.$initialize();
@@ -12105,7 +12029,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             OnValueChanged: function (newValuePriority, newValue) {
                 if (this.ValuePriority > newValuePriority) {
                     if (this.baseValuePriority <= newValuePriority && newValuePriority <= System.Windows.DependencyPropertyValueEntry.BaseValueHighestPriority) {
-                        this.baseValuePriority = 12; // invalidate baseValuePriority
+                        this.baseValuePriority = 12;
                     }
 
                     return;
@@ -12116,7 +12040,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 if (this.ValuePriority === newValuePriority && isNewValueValid && Bridge.staticEquals(this.coerceValueCallback, null)) {
                     this.Value = newValue;
-                    System.Windows.DependencyPropertyChangedEventHandlerExtensions.Raise(this.ValueChanged, this, new System.Windows.DependencyPropertyChangedEventArgs.$ctor1(this.dependencyProperty, oldValue, newValue)); // since this was already the value priority and there is no coercion, Value must have been changed here
+                    System.Windows.DependencyPropertyChangedEventHandlerExtensions.Raise(this.ValueChanged, this, new System.Windows.DependencyPropertyChangedEventArgs.$ctor1(this.dependencyProperty, oldValue, newValue));
                     return;
                 }
 
@@ -12132,7 +12056,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 if (this.ValuePriority !== newValuePriority) {
                     this.ValuePriority = newValuePriority;
-                    this.baseValuePriority = newValuePriority; // possible invalidation of baseValuePriority
+                    this.baseValuePriority = newValuePriority;
                 }
 
                 if (!Bridge.staticEquals(this.coerceValueCallback, null)) {
@@ -12299,51 +12223,39 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, System.Windows.FrameworkPropertyMetadataOptions.None, null, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor1: function (defaultValue) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, System.Windows.FrameworkPropertyMetadataOptions.None, null, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor8: function (flags) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, flags, null, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor9: function (flags, propertyChangedCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, flags, propertyChangedCallback, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor10: function (flags, propertyChangedCallback, coerceValueCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, flags, propertyChangedCallback, coerceValueCallback, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor11: function (propertyChangedCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, System.Windows.FrameworkPropertyMetadataOptions.None, propertyChangedCallback, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor12: function (propertyChangedCallback, coerceValueCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, null, System.Windows.FrameworkPropertyMetadataOptions.None, propertyChangedCallback, coerceValueCallback, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor6: function (defaultValue, propertyChangedCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, System.Windows.FrameworkPropertyMetadataOptions.None, propertyChangedCallback, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor2: function (defaultValue, flags) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, flags, null, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor7: function (defaultValue, propertyChangedCallback, coerceValueCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, System.Windows.FrameworkPropertyMetadataOptions.None, propertyChangedCallback, coerceValueCallback, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor3: function (defaultValue, flags, propertyChangedCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, flags, propertyChangedCallback, null, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor4: function (defaultValue, flags, propertyChangedCallback, coerceValueCallback) {
                 System.Windows.FrameworkPropertyMetadata.$ctor5.call(this, defaultValue, flags, propertyChangedCallback, coerceValueCallback, false, System.Windows.Data.UpdateSourceTrigger.Default);
-                //
             },
             $ctor5: function (defaultValue, flags, propertyChangedCallback, coerceValueCallback, isAnimationProhibited, defaultUpdateSourceTrigger) {
                 this.$initialize();
@@ -12372,9 +12284,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             Attach: function (element) {
                 element.TemplateChild = null;
             },
-            Detach: function (element) {
-                //
-            }
+            Detach: function (element) { }
         }
     });
 
@@ -12457,7 +12367,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 var indexPropertyValue = { };
 
-                // an index property that has a name (such as "Values[0]"), might be a regular property with the same name ("Values"), and a default index property ("[0]" or "Item[0]")
                 if (!isDefaultIndexProperty && System.Windows.PropertyPathElement.TryGetValue(target, this.PropertyName, indexPropertyValue)) {
                     if (indexPropertyValue.v == null) {
                         value.v = null;
@@ -12588,9 +12497,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         methods: {
-            Activate: function () {
-                //
-            },
+            Activate: function () { },
             Deactivate: function () {
                 var $t;
                 if (this.Target != null) {
@@ -12836,7 +12743,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -13128,7 +13034,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -13269,7 +13174,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (name) {
                 this.$initialize();
                 System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
-                //
             }
         }
     });
@@ -13383,7 +13287,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (name) {
                 this.$initialize();
                 System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
-                //
             }
         }
     });
@@ -13415,7 +13318,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -13764,7 +13666,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     try {
                         while ($t.moveNext()) {
                             var member = $t.Current;
-                            // markup extensions may contain members with an empty name, the name should be resolved from the member index
                             var memberName = member.Name.IsEmpty ? System.Windows.Markup.ElementInitializer.GetParameterName(elementType, index) : member.Name;
 
                             list.add(System.Windows.Markup.ElementMemberInitializer.Create(System.Windows.Markup.XamlNameExtensions.ResolveContainingType(memberName, elementType), memberName.MemberName, member.Values, member.Namespaces, member.SourceUri));
@@ -13874,7 +13775,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var name = Granular.Extensions.StringExtensions.DefaultIfNullOrEmpty(this.nameDirectiveValue, this.nameProperty != null ? Bridge.cast(this.nameProperty.System$Windows$Markup$IPropertyAdapter$GetValue(element), System.String) : "");
 
                 if (!Granular.Extensions.StringExtensions.IsNullOrEmpty(this.nameDirectiveValue) && this.nameProperty != null) {
-                    // name property exists, but the name directive was used, so update the property
                     this.nameProperty.System$Windows$Markup$IPropertyAdapter$SetValue(element, name, context.ValueSource);
                 }
 
@@ -13919,9 +13819,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         $kind: "nested class",
         alias: ["InitializeElement", "System$Windows$Markup$IElementInitializer$InitializeElement"],
         methods: {
-            InitializeElement: function (element, context) {
-                //
-            }
+            InitializeElement: function (element, context) { }
         }
     });
 
@@ -13953,7 +13851,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     if (System.Windows.Markup.ElementCollectionContentInitailizer.IsCollectionType(propertyAdapter.System$Windows$Markup$IPropertyAdapter$PropertyType)) {
                         var propertyContentInitializer = System.Windows.Markup.ElementCollectionContentInitailizer.Create(values, propertyAdapter.System$Windows$Markup$IPropertyAdapter$PropertyType);
 
-                        // wrap with a factory that creates the collection (when it's null) before adding its values
                         return new System.Windows.Markup.ElementPropertyMemberInitializer.ElementPropertyMemberFactoryInitializer(propertyAdapter, propertyContentInitializer);
                     }
 
@@ -14099,7 +13996,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -14170,7 +14066,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -14230,7 +14125,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (name) {
                 this.$initialize();
                 System.Windows.Markup.PropertyAttribute.ctor.call(this, name);
-                //
             }
         }
     });
@@ -14262,7 +14156,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -14288,7 +14181,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -14330,7 +14222,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -14356,7 +14247,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -15190,12 +15080,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.ScheduleTick(clock.System$Windows$Media$Animation$IClock$FirstTick);
             },
             ScheduleTick: function (tickTime) {
-                // keep TickFrequency interval between ticks
                 tickTime = Granular.Extensions.TimeSpanExtensions.Max(tickTime, System.TimeSpan.add(this.lastTickTime, System.Windows.Media.Animation.RootClock.TickFrequency));
 
                 if (this.scheduledTick != null) {
                     if (System.TimeSpan.lte(this.scheduledTickTime, tickTime)) {
-                        // earlier tick is already scheduled
                         return;
                     }
 
@@ -16818,7 +16706,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.Threading.DispatcherOperation.$ctor1.call(this, function () {
                     return action();
                 }, priority);
-                //
             }
         }
     }; });
@@ -17548,9 +17435,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     }
                 }
             },
-            ArrangeCore: function (finalRect) {
-                //
-            },
+            ArrangeCore: function (finalRect) { },
             InvalidateArrange: function () {
                 if (!this.IsArrangeValid) {
                     return;
@@ -17572,9 +17457,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.OnLayoutUpdated();
                 Granular.Extensions.EventHandlerExtensions.Raise$3(this.LayoutUpdated, this, { });
             },
-            OnLayoutUpdated: function () {
-                //
-            },
+            OnLayoutUpdated: function () { },
             RenderAsync: function () {
                 if (this.renderOperation != null && this.renderOperation.Status === System.Windows.Threading.DispatcherOperationStatus.Pending) {
                     return;
@@ -17595,9 +17478,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 this.IsVisualValid = true;
             },
-            OnRender: function (drawingContext) {
-                //
-            },
+            OnRender: function (drawingContext) { },
             InvalidateVisual: function () {
                 if (!this.IsVisualValid) {
                     return;
@@ -17632,9 +17513,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     Bridge.cast(newVisualParent, System.Windows.UIElement).InvalidateMeasure();
                 }
             },
-            OnLogicalParentChanged: function (oldLogicalParent, newLogicalParent) {
-                //
-            },
+            OnLogicalParentChanged: function (oldLogicalParent, newLogicalParent) { },
             SetInheritanceParent$1: function () {
                 this.SetInheritanceParent(this.LogicalParent || this.VisualParent);
             },
@@ -17708,7 +17587,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.animatableRootClock = animatableRootClock;
             },
             ForceDefaultValueInheritance: function (e) {
-                // clear modified value if it's equal to a default value that should be inherited
                 if (Granular.Compatibility.EqualityComparer.Default.equals2(e.NewValue, e.Property.GetMetadata(Bridge.getType(this)).DefaultValue) && !this.GetValueSource(e.Property).IsExpression) {
                     this.ClearValue(e.Property);
                 }
@@ -17722,7 +17600,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.ClearFocus();
 
                 if (this.animatableRootClock != null) {
-                    // add or remove animation clocks from the global root clock
                     this.animatableRootClock.IsConnected = this.IsVisible;
                 }
 
@@ -17815,63 +17692,25 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             System$Windows$IInputElement$GetRelativePosition: function (absolutePosition) {
                 return this.PointFromRoot(absolutePosition);
             },
-            OnMouseEnter: function (e) {
-                //
-            },
-            OnMouseLeave: function (e) {
-                //
-            },
-            OnQueryCursor: function (e) {
-                //
-            },
-            OnPreviewMouseMove: function (e) {
-                //
-            },
-            OnPreviewMouseDown: function (e) {
-                //
-            },
-            OnPreviewMouseUp: function (e) {
-                //
-            },
-            OnPreviewMouseWheel: function (e) {
-                //
-            },
-            OnMouseMove: function (e) {
-                //
-            },
-            OnMouseDown: function (e) {
-                //
-            },
-            OnMouseUp: function (e) {
-                //
-            },
-            OnMouseWheel: function (e) {
-                //
-            },
-            OnGotKeyboardFocus: function (e) {
-                //
-            },
-            OnLostKeyboardFocus: function (e) {
-                //
-            },
-            OnPreviewKeyDown: function (e) {
-                //
-            },
-            OnPreviewKeyUp: function (e) {
-                //
-            },
-            OnKeyDown: function (e) {
-                //
-            },
-            OnKeyUp: function (e) {
-                //
-            },
-            OnGotFocus: function (e) {
-                //
-            },
-            OnLostFocus: function (e) {
-                //
-            }
+            OnMouseEnter: function (e) { },
+            OnMouseLeave: function (e) { },
+            OnQueryCursor: function (e) { },
+            OnPreviewMouseMove: function (e) { },
+            OnPreviewMouseDown: function (e) { },
+            OnPreviewMouseUp: function (e) { },
+            OnPreviewMouseWheel: function (e) { },
+            OnMouseMove: function (e) { },
+            OnMouseDown: function (e) { },
+            OnMouseUp: function (e) { },
+            OnMouseWheel: function (e) { },
+            OnGotKeyboardFocus: function (e) { },
+            OnLostKeyboardFocus: function (e) { },
+            OnPreviewKeyDown: function (e) { },
+            OnPreviewKeyUp: function (e) { },
+            OnKeyDown: function (e) { },
+            OnKeyUp: function (e) { },
+            OnGotFocus: function (e) { },
+            OnLostFocus: function (e) { }
         }
     });
 
@@ -18076,7 +17915,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkTemplate.ctor.call(this);
-                //
             }
         }
     });
@@ -18288,7 +18126,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.sourceObserver = System.Windows.Data.BindingExpression.CreateSourceObserver(this.Target, this.Source, this.RelativeSource, this.ElementName);
                 this.sourceExpression = new System.Windows.Data.ObservableExpression.$ctor1(this.sourceObserver, this.Path || System.Windows.PropertyPath.Empty);
 
-                // try to update the target (or the source on OneWayToSource)
                 if (this.isTargetUpdateMode) {
                     this.sourceExpression.addValueChanged(Bridge.fn.bind(this, $asm.$.System.Windows.Data.BindingExpression.f1));
                     this.UpdateTargetOnSourceChanged();
@@ -18401,7 +18238,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         f2: function (sender, oldValue, newValue) {
             if (this.Status === System.Windows.Data.BindingStatus.UpdateSourceError && !Bridge.referenceEquals(this.sourceExpression.Value, System.Windows.Data.ObservableValue.UnsetValue) && !Granular.ReentrancyLock.op_Implicit(this.disableTargetUpdate)) {
-                // source was connected
                 this.UpdateSourceOnTargetChanged();
             }
         }
@@ -18867,7 +18703,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkTemplate.ctor.call(this);
-                //
             }
         }
     });
@@ -19086,7 +18921,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 System.Windows.FreezableCollection$1(T).$ctor1.call(this, System.Array.init(0, function (){
                     return Bridge.getDefaultValue(T);
                 }, T));
-                //
             },
             $ctor1: function (collection) {
                 var $t;
@@ -19232,15 +19066,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         },
         methods: {
             FindNextTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                return System.Windows.Input.KeyboardNavigationTarget.FindNextContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || currentStop.Element; // stay at the edge
+                return System.Windows.Input.KeyboardNavigationTarget.FindNextContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || currentStop.Element;
             },
             FindPreviousTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                return System.Windows.Input.KeyboardNavigationTarget.FindPreviousContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || currentStop.Element; // stay at the edge
+                return System.Windows.Input.KeyboardNavigationTarget.FindPreviousContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || currentStop.Element;
             },
             FindFirstTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
                 return System.Windows.Input.KeyboardNavigationTarget.FindFirstContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider);
@@ -19268,7 +19101,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         }
     });
@@ -19296,7 +19128,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -19337,15 +19168,14 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         },
         methods: {
             FindNextTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                return System.Windows.Input.KeyboardNavigationTarget.FindNextContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || (scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindNextTarget(scope.VisualParent, new System.Windows.Input.KeyboardNavigationTarget.Stop.$ctor1(currentStop.Element, System.Windows.Input.KeyboardNavigation.GetTabIndex(scope)), navigationModeProperty, stopComparerProvider) : null); // translate currentStop and forward request to parent
+                return System.Windows.Input.KeyboardNavigationTarget.FindNextContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || (scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindNextTarget(scope.VisualParent, new System.Windows.Input.KeyboardNavigationTarget.Stop.$ctor1(currentStop.Element, System.Windows.Input.KeyboardNavigation.GetTabIndex(scope)), navigationModeProperty, stopComparerProvider) : null);
             },
             FindPreviousTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                return System.Windows.Input.KeyboardNavigationTarget.FindPreviousContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || (scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindPreviousTarget(scope.VisualParent, new System.Windows.Input.KeyboardNavigationTarget.Stop.$ctor1(currentStop.Element, System.Windows.Input.KeyboardNavigation.GetTabIndex(scope)), navigationModeProperty, stopComparerProvider) : null); // translate currentStop and forward request to parent
+                return System.Windows.Input.KeyboardNavigationTarget.FindPreviousContainedTarget(scope, currentStop, navigationModeProperty, stopComparerProvider) || (scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindPreviousTarget(scope.VisualParent, new System.Windows.Input.KeyboardNavigationTarget.Stop.$ctor1(currentStop.Element, System.Windows.Input.KeyboardNavigation.GetTabIndex(scope)), navigationModeProperty, stopComparerProvider) : null);
             },
             GetGlobalStops: function (scope, currentElement, navigationModeProperty) {
                 return new (Bridge.GeneratorEnumerable$1(System.Windows.Input.KeyboardNavigationTarget.Stop))(Bridge.fn.bind(this, function (scope, currentElement, navigationModeProperty) {
@@ -19381,8 +19211,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                                         continue;
                                     }
                                     case 3: {
-                                        // translate stops to have scope tab index instead of local tab index, local order is kept
-                                            $t = Bridge.getEnumerator(System.Linq.Enumerable.from(scope.VisualChildren).selectMany(function (child) {
+                                        $t = Bridge.getEnumerator(System.Linq.Enumerable.from(scope.VisualChildren).selectMany(function (child) {
                                                     return System.Windows.Input.KeyboardNavigationTarget.GetGlobalStops(child, currentElement, navigationModeProperty);
                                                 }).orderBy($asm.$.System.Windows.Input.KeyboardNavigationTarget.LocalNavigation.f1));
                                             $step = 4;
@@ -19455,16 +19284,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         },
         methods: {
             FindNextTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                // forward the request to the parent
                 return scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindNextTarget(scope.VisualParent, currentStop, navigationModeProperty, stopComparerProvider) : null;
             },
             FindPreviousTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                // forward the request to the parent
                 return scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindPreviousTarget(scope.VisualParent, currentStop, navigationModeProperty, stopComparerProvider) : null;
             },
             GetGlobalStops: function (scope, currentElement, navigationModeProperty) {
@@ -19497,8 +19323,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                                         continue;
                                     }
                                     case 3: {
-                                        // add currentElement stop if it's a descendant of scope
-                                            if (System.Windows.Media.VisualExtensions.IsAncestorOf(scope, currentElement)) {
+                                        if (System.Windows.Media.VisualExtensions.IsAncestorOf(scope, currentElement)) {
                                                 $step = 4;
                                                 continue;
                                             } 
@@ -19560,16 +19385,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Input.KeyboardNavigationTarget.BaseNavigation.ctor.call(this);
-                //
             }
         },
         methods: {
             FindNextTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                // forward the request to the parent
                 return scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindNextTarget(scope.VisualParent, currentStop, navigationModeProperty, stopComparerProvider) : null;
             },
             FindPreviousTarget: function (scope, currentStop, navigationModeProperty, stopComparerProvider) {
-                // forward the request to the parent
                 return scope.VisualParent != null ? System.Windows.Input.KeyboardNavigationTarget.FindPreviousTarget(scope.VisualParent, currentStop, navigationModeProperty, stopComparerProvider) : null;
             },
             GetGlobalStops: function (scope, currentElement, navigationModeProperty) {
@@ -20000,9 +19822,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var layerOwner = valueSource === System.Windows.BaseValueSource.Local ? null : target.TemplatedParent;
                 this.Begin(target, nameScope, layerOwner);
             },
-            Clean: function (target, valueSource) {
-                //
-            },
+            Clean: function (target, valueSource) { },
             IsActionOverlaps: function (action) {
                 return false;
             },
@@ -20104,9 +19924,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             "IsActionOverlaps", "System$Windows$ITriggerAction$IsActionOverlaps"
         ],
         methods: {
-            Clean: function (target, valueSource) {
-                //
-            },
+            Clean: function (target, valueSource) { },
             IsActionOverlaps: function (action) {
                 return false;
             },
@@ -20343,7 +20161,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 var storyboard;
                 if (transitionStoryboard != null && state.Storyboard != null) {
-                    // create a sequential animation with the transition storyboard first and then the state storyboard
                     var sequentialTimeline = new System.Windows.Media.Animation.SequentialTimeline();
                     sequentialTimeline.Children.add(transitionStoryboard);
                     sequentialTimeline.Children.add(state.Storyboard);
@@ -20885,9 +20702,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 return true;
             },
-            OnApplyTemplate: function () {
-                //
-            },
+            OnApplyTemplate: function () { },
             OnVisualParentChanged: function (oldVisualParent, newVisualParent) {
                 System.Windows.UIElement.prototype.OnVisualParentChanged.call(this, oldVisualParent, newVisualParent);
 
@@ -20907,9 +20722,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.OnInitialized({ });
                 this.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.FrameworkElement.InitializedEvent, this));
             },
-            OnInitialized: function (e) {
-                //
-            },
+            OnInitialized: function (e) { },
             OnStyleChanged: function (e) {
                 if (e.OldValue != null) {
                     (Bridge.as(e.OldValue, System.Windows.Style)).Detach(this);
@@ -20952,9 +20765,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             SetResourceInheritanceParent: function (parent) {
                 this.ResourceInheritanceParent = parent;
             },
-            OnTemplateChildChanged: function () {
-                //
-            },
+            OnTemplateChildChanged: function () { },
             OnTriggersCollectionChanged: function (sender, e) {
                 var $t, $t1;
                 $t = Bridge.getEnumerator(e.OldItems, System.Object);
@@ -21587,7 +21398,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (routedEvent, originalSource, mouseDevice, timestamp, absolutePosition) {
                 this.$initialize();
                 System.Windows.Input.MouseEventArgs.ctor.call(this, routedEvent, originalSource, mouseDevice, timestamp, absolutePosition);
-                //
             }
         },
         methods: {
@@ -21758,15 +21568,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function (width, height) {
                 System.Windows.Rect.$ctor2.call(this, System.Windows.Point.Zero, new System.Windows.Size(width, height));
-                //
             },
             $ctor1: function (left, top, width, height) {
                 System.Windows.Rect.$ctor2.call(this, new System.Windows.Point.$ctor1(left, top), new System.Windows.Size(width, height));
-                //
             },
             $ctor3: function (size) {
                 System.Windows.Rect.$ctor2.call(this, System.Windows.Point.Zero, size);
-                //
             },
             $ctor2: function (location, size) {
                 this.$initialize();
@@ -21918,15 +21725,12 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Thickness.$ctor3.call(this, 0, 0, 0, 0);
-                //
             },
             $ctor1: function (uniformLength) {
                 System.Windows.Thickness.$ctor3.call(this, uniformLength, uniformLength, uniformLength, uniformLength);
-                //
             },
             $ctor2: function (leftRight, topBottom) {
                 System.Windows.Thickness.$ctor3.call(this, leftRight, topBottom, leftRight, topBottom);
-                //
             },
             $ctor3: function (left, top, right, bottom) {
                 this.$initialize();
@@ -21991,7 +21795,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -22206,7 +22009,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (parallelTimeline, children) {
                 this.$initialize();
                 System.Windows.Media.Animation.TimelineGroupClock.ctor.call(this, new System.Windows.Media.Animation.ParallelClock(children), parallelTimeline, children);
-                //
             }
         }
     });
@@ -22317,7 +22119,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function (SequentialTimeline, children) {
                 this.$initialize();
                 System.Windows.Media.Animation.TimelineGroupClock.ctor.call(this, new System.Windows.Media.Animation.SequentialClock(children), SequentialTimeline, children);
-                //
             }
         }
     });
@@ -22453,7 +22254,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.Animatable.ctor.call(this);
-                //
             },
             $ctor1: function (dashes, offset) {
                 System.Windows.Media.DashStyle.ctor.call(this);
@@ -22560,7 +22360,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.Animatable.ctor.call(this);
-                //
             },
             $ctor1: function (color, offset) {
                 this.$initialize();
@@ -22708,7 +22507,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.Animatable.ctor.call(this);
-                //
             },
             $ctor1: function (brush, thickness) {
                 System.Windows.Media.Pen.ctor.call(this);
@@ -22990,9 +22788,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                 return finalSize;
             },
-            UpdateVisualState: function (useTransitions) {
-                //
-            },
+            UpdateVisualState: function (useTransitions) { },
             OnApplyTemplate: function () {
                 this.UpdateVisualState(false);
             },
@@ -23239,7 +23035,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -23470,7 +23265,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -23597,7 +23391,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -23707,7 +23500,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -23759,7 +23551,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 }
             },
             HitTestOverride: function (position) {
-                // receive a click if there is a non "StaysOpen" child opened
                 return System.Linq.Enumerable.from(this.VisualChildren).any($asm.$.System.Windows.Controls.PopupLayer.f1);
             },
             BringToFront: function (child) {
@@ -23920,12 +23711,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             }
         },
         methods: {
-            OnOpened: function () {
-                //
-            },
-            OnClosed: function () {
-                //
-            },
+            OnOpened: function () { },
+            OnClosed: function () { },
             OnVisualAncestorChanged: function () {
                 System.Windows.FrameworkElement.prototype.OnVisualAncestorChanged.call(this);
                 this.PopupLayer = System.Windows.Controls.PopupLayer.GetPopupLayer(this);
@@ -24223,11 +24010,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var mainLength = this.GetMainLength(finalSize);
                 var crossLength = this.GetCrossLength(finalSize);
 
-                // the scrollable range (Maximum - Minimum) equals to (ExtentSize - ViewportSize)
-                // the thumb ratio should be (ViewportSize / ExtentSize) = (ViewportSize / (ViewportSize + Maximum - Minimum))
                 var thumbMainLength = Granular.Extensions.DoubleExtensions.Bounds((isNaN(this.ViewportSize) ? (this.Thumb == null ? 0 : this.GetMainLength(this.Thumb.DesiredSize)) : (mainLength * this.ViewportSize / (this.ViewportSize + this.Maximum - this.Minimum))), this.ThumbMinLength, Granular.Extensions.DoubleExtensions.Max(this.ThumbMinLength, mainLength));
 
-                // the decrease and increase buttons fill the remaining area (these buttons are usually transparent)
                 var decreaseButtonMainLength = this.Maximum === this.Minimum ? 0 : (mainLength - thumbMainLength) * (Granular.Extensions.DoubleExtensions.Min(this.Value, this.Maximum) - this.Minimum) / (this.Maximum - this.Minimum);
                 var increaseButtonMainLength = mainLength - thumbMainLength - decreaseButtonMainLength;
 
@@ -24377,7 +24161,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FrameworkElement.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -25252,16 +25035,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Documents.TextElement.ctor.call(this);
-                //FrameworkElement.MarginProperty.OverrideMetadata(typeof(Block), ...
             }
         },
         methods: {
             GetRenderElement: function (factory) {
                 return null;
             },
-            RemoveRenderElement: function (factory) {
-                //
-            }
+            RemoveRenderElement: function (factory) { }
         }
     });
 
@@ -25516,7 +25296,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.DiscreteKeyFrame$1(System.Nullable$1(System.Double)).ctor.call(this, System.Windows.Media.Animation.DoubleAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25527,7 +25306,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.DiscreteKeyFrame$1(System.Windows.Rect).ctor.call(this, System.Windows.Media.Animation.RectAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25538,7 +25316,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.DiscreteKeyFrame$1(System.Windows.Thickness).ctor.call(this, System.Windows.Media.Animation.ThicknessAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25549,7 +25326,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.EasingKeyFrame$1(System.Nullable$1(System.Double)).ctor.call(this, System.Windows.Media.Animation.DoubleAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25560,7 +25336,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.EasingKeyFrame$1(System.Windows.Rect).ctor.call(this, System.Windows.Media.Animation.RectAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25571,7 +25346,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.EasingKeyFrame$1(System.Windows.Thickness).ctor.call(this, System.Windows.Media.Animation.ThicknessAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25582,7 +25356,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.LinearKeyFrame$1(System.Nullable$1(System.Double)).ctor.call(this, System.Windows.Media.Animation.DoubleAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25593,7 +25366,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.LinearKeyFrame$1(System.Windows.Rect).ctor.call(this, System.Windows.Media.Animation.RectAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25604,7 +25376,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.LinearKeyFrame$1(System.Windows.Thickness).ctor.call(this, System.Windows.Media.Animation.ThicknessAnimationOperations.Default);
-                //
             }
         }
     });
@@ -25647,7 +25418,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -25704,7 +25474,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -25769,7 +25538,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Geometry.ctor.call(this);
-                //
             },
             $ctor1: function (center, radiusX, radiusY) {
                 System.Windows.Media.EllipseGeometry.ctor.call(this);
@@ -25783,7 +25551,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             $ctor3: function (rect) {
                 System.Windows.Media.EllipseGeometry.$ctor1.call(this, new System.Windows.Point.$ctor1((rect.Left + rect.Right) / 2, (rect.Top + rect.Bottom) / 2), rect.Width / 2, rect.Height / 2);
-                //
             }
         },
         methods: {
@@ -25852,11 +25619,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Media.GradientBrush.$ctor2.call(this, new System.Windows.Media.GradientStopCollection.ctor());
-                //
             },
             $ctor1: function (gradientStops) {
                 System.Windows.Media.GradientBrush.$ctor2.call(this, new System.Windows.Media.GradientStopCollection.$ctor1(gradientStops));
-                //
             },
             $ctor2: function (gradientStops) {
                 this.$initialize();
@@ -25922,12 +25687,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.FreezableCollection$1(System.Windows.Media.GradientStop).ctor.call(this);
-                //
             },
             $ctor1: function (collection) {
                 this.$initialize();
                 System.Windows.FreezableCollection$1(System.Windows.Media.GradientStop).$ctor1.call(this, collection);
-                //
             }
         }
     });
@@ -26128,7 +25891,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Geometry.ctor.call(this);
-                //
             },
             $ctor1: function (startPoint, endPoint) {
                 System.Windows.Media.LineGeometry.ctor.call(this);
@@ -26185,11 +25947,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Media.MatrixTransform.$ctor2.call(this, System.Windows.Media.Matrix.Identity);
-                //
             },
             $ctor1: function (m11, m12, m21, m22, offsetX, offsetY) {
                 System.Windows.Media.MatrixTransform.$ctor2.call(this, new System.Windows.Media.Matrix(m11, m12, m21, m22, offsetX, offsetY));
-                //
             },
             $ctor2: function (matrix) {
                 this.$initialize();
@@ -26258,7 +26018,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Geometry.ctor.call(this);
-                //
             },
             $ctor1: function (rect) {
                 System.Windows.Media.RectangleGeometry.ctor.call(this);
@@ -26556,7 +26315,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Brush.ctor.call(this);
-                //
             },
             $ctor1: function (color) {
                 this.$initialize();
@@ -26716,11 +26474,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 System.Windows.Media.TranslateTransform.$ctor2.call(this, System.Windows.Media.Matrix.Identity);
-                //
             },
             $ctor1: function (x, y) {
                 System.Windows.Media.TranslateTransform.$ctor2.call(this, System.Windows.Media.Matrix.TranslationMatrix(x, y));
-                //
             },
             $ctor2: function (matrix) {
                 this.$initialize();
@@ -26867,7 +26623,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             methods: {
                 IsOverBorder: function (position, borderSize, borderTickness, cornerRadius) {
-                    return position.X < borderTickness.Left || position.Y < borderTickness.Top || borderSize.Width - position.X < borderTickness.Right || borderSize.Height - position.Y < borderTickness.Bottom; // cornerRadius is ignored
+                    return position.X < borderTickness.Left || position.Y < borderTickness.Top || borderSize.Width - position.X < borderTickness.Right || borderSize.Height - position.Y < borderTickness.Bottom;
                 }
             }
         },
@@ -26920,7 +26676,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.Decorator.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -27064,7 +26819,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.Control.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -27185,7 +26939,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 try {
                     while ($t.moveNext()) {
                         var child = $t.Current;
-                        // Canvas.Left and Canvas.Top have higher priority
                         var x = Granular.Extensions.DoubleExtensions.DefaultIfNaN(Granular.Extensions.DoubleExtensions.DefaultIfNaN(System.Windows.Controls.Canvas.GetLeft(child), finalSize.Width - child.DesiredSize.Width - System.Windows.Controls.Canvas.GetRight(child)), 0);
                         var y = Granular.Extensions.DoubleExtensions.DefaultIfNaN(Granular.Extensions.DoubleExtensions.DefaultIfNaN(System.Windows.Controls.Canvas.GetTop(child), finalSize.Height - child.DesiredSize.Height - System.Windows.Controls.Canvas.GetBottom(child)), 0);
 
@@ -27408,11 +27161,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     }
                 },
                 GetStarLength: function (definitionBases, totalStarsLength) {
-                    // each axis starred length is a bounded function:
-                    // axis.GetStarredLength(starLength) => (axis.Length.Value * starLength).Bounds(axis.MinLength, axis.MaxLength)
 
-                    // find a starLength where:
-                    // definitionBases.Sum(axis => axis.GetStarredLength(starLength)) == totalStarsLength
 
                     var starredAxis = Granular.Compatibility.Linq.Enumerable.Where(Bridge.global.System.Windows.Controls.IDefinitionBase, definitionBases, $asm.$.System.Windows.Controls.Grid.f1);
 
@@ -27501,7 +27250,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var currentColumnDefinitions = this.ColumnDefinitions.Count === 0 ? this.defaultColumnDefinitions : Granular.Compatibility.Linq.Enumerable.ToArray(Bridge.global.System.Windows.Controls.ColumnDefinition, this.ColumnDefinitions);
 
                 if (currentRowDefinitions.length === 1 && currentColumnDefinitions.length === 1) {
-                    // optimization
                     return this.MeasureSingleCell(availableSize, currentColumnDefinitions[System.Array.index(0, currentColumnDefinitions)].System$Windows$Controls$IDefinitionBase$Length, currentRowDefinitions[System.Array.index(0, currentRowDefinitions)].System$Windows$Controls$IDefinitionBase$Length);
                 }
 
@@ -27545,7 +27293,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 var currentColumnDefinitions = this.ColumnDefinitions.Count === 0 ? this.defaultColumnDefinitions : Granular.Compatibility.Linq.Enumerable.ToArray(Bridge.global.System.Windows.Controls.ColumnDefinition, this.ColumnDefinitions);
 
                 if (currentRowDefinitions.length === 1 && currentColumnDefinitions.length === 1) {
-                    // optimization
                     return this.ArrangeSingleCell(finalSize, currentColumnDefinitions[System.Array.index(0, currentColumnDefinitions)], currentRowDefinitions[System.Array.index(0, currentRowDefinitions)]);
                 }
 
@@ -27804,9 +27551,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     Bridge.cast(container, System.Windows.Controls.IItemContainer).System$Windows$Controls$IItemContainer$PrepareContainerForItem(item, itemTemplate, itemContainerStyle);
                 }
             },
-            OnPrepareContainerForItem: function (item, container) {
-                //
-            },
+            OnPrepareContainerForItem: function (item, container) { },
             ClearContainerForItem: function (item, container) {
                 this.ClearContainerForItemOverride(item, container);
 
@@ -27817,9 +27562,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     Bridge.cast(container, System.Windows.Controls.IItemContainer).System$Windows$Controls$IItemContainer$ClearContainerForItem(item);
                 }
             },
-            OnClearContainerForItem: function (item, container) {
-                //
-            },
+            OnClearContainerForItem: function (item, container) { },
             OnItemsSourceChanged: function (e) {
                 if (this.ItemsSource == null && !this.GetValueSource(System.Windows.Controls.ItemsControl.ItemsSourceProperty).IsExpression) {
                     this.Items.ClearItemsSource();
@@ -28046,10 +27789,10 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.RaiseEvent(new (System.Windows.RoutedPropertyChangedEventArgs$1(System.Double))(System.Windows.Controls.Primitives.RangeBase.ValueChangedEvent, this, System.Nullable.getValue(Bridge.cast(Bridge.unbox(e.OldValue), System.Double)), System.Nullable.getValue(Bridge.cast(Bridge.unbox(e.NewValue), System.Double))));
             },
             OnMinimumChanged: function (e) {
-                this.CoerceValue(System.Windows.Controls.Primitives.RangeBase.ValueProperty); // CoerceValueRange may return a different value
+                this.CoerceValue(System.Windows.Controls.Primitives.RangeBase.ValueProperty);
             },
             OnMaximumChanged: function (e) {
-                this.CoerceValue(System.Windows.Controls.Primitives.RangeBase.ValueProperty); // CoerceValueRange may return a different value
+                this.CoerceValue(System.Windows.Controls.Primitives.RangeBase.ValueProperty);
             },
             GetCommonState: function () {
                 if (!this.IsEnabled) {
@@ -28512,7 +28255,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         },
         methods: {
             OnTemplateChildChanged: function () {
-                // move AdornerLayer to the top
                 this.SetVisualChildIndex(this.AdornerLayer, ((System.Linq.Enumerable.from(this.VisualChildren).count() - 1) | 0));
             },
             MeasureOverride: function (availableSize) {
@@ -28538,7 +28280,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
 
                         this.TemplateChild.Arrange(new System.Windows.Rect.$ctor2(System.Windows.Point.op_UnaryNegation(childOffset), childFinalSize));
                     } else {
-                        // CanContentScroll and Content implements IScrollInfo
                         this.TemplateChild.Arrange(new System.Windows.Rect.$ctor3(finalSize));
                     }
                 }
@@ -28812,7 +28553,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                         if (currentGroupMainLength > 0 && currentGroupMainLength + childMainLength > mainLength) {
                             groups.add(currentGroup);
 
-                            // start a new group
                             currentGroup = new (System.Collections.Generic.List$1(System.Windows.UIElement)).ctor();
                             currentGroupMainLength = 0;
                         }
@@ -28903,7 +28643,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Documents.Inline.ctor.call(this);
-                //
             },
             $ctor1: function (text) {
                 this.$initialize();
@@ -28915,9 +28654,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             GetRenderElement: function (factory) {
                 return null;
             },
-            RemoveRenderElement: function (factory) {
-                //
-            }
+            RemoveRenderElement: function (factory) { }
         }
     });
 
@@ -28997,7 +28734,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.TransitionAnimationTimeline$1(System.Nullable$1(System.Double)).ctor.call(this, System.Windows.Media.Animation.DoubleAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29008,7 +28744,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.KeyFramesAnimationTimeline$1(System.Nullable$1(System.Double)).ctor.call(this, System.Windows.Media.Animation.DoubleAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29019,7 +28754,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.TransitionAnimationTimeline$1(System.Windows.Rect).ctor.call(this, System.Windows.Media.Animation.RectAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29030,7 +28764,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.KeyFramesAnimationTimeline$1(System.Windows.Rect).ctor.call(this, System.Windows.Media.Animation.RectAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29237,7 +28970,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.TransitionAnimationTimeline$1(System.Windows.Thickness).ctor.call(this, System.Windows.Media.Animation.ThicknessAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29248,7 +28980,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.KeyFramesAnimationTimeline$1(System.Windows.Thickness).ctor.call(this, System.Windows.Media.Animation.ThicknessAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -29345,12 +29076,8 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             "EndInit", "System$Windows$Markup$ISupportInitialize$EndInit"
         ],
         methods: {
-            BeginInit: function () {
-                //
-            },
-            EndInit: function () {
-                //
-            },
+            BeginInit: function () { },
+            EndInit: function () { },
             CreateRenderResource: function (factory) {
                 return factory.System$Windows$Media$IRenderElementFactory$CreateImageSourceRenderResource();
             },
@@ -29467,19 +29194,15 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.GradientBrush.ctor.call(this);
-                //
             },
             $ctor2: function (angle, startColor, endColor) {
                 System.Windows.Media.LinearGradientBrush.$ctor3.call(this, System.Windows.Media.LinearGradientBrush.GetStartPoint(angle), System.Windows.Media.LinearGradientBrush.GetEndPoint(angle), System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
-                //
             },
             $ctor1: function (angle, gradientStops) {
                 System.Windows.Media.LinearGradientBrush.$ctor3.call(this, System.Windows.Media.LinearGradientBrush.GetStartPoint(angle), System.Windows.Media.LinearGradientBrush.GetEndPoint(angle), gradientStops);
-                //
             },
             $ctor4: function (startPoint, endPoint, startColor, endColor) {
                 System.Windows.Media.LinearGradientBrush.$ctor3.call(this, startPoint, endPoint, System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
-                //
             },
             $ctor3: function (startPoint, endPoint, gradientStops) {
                 this.$initialize();
@@ -29582,16 +29305,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.GradientBrush.ctor.call(this);
-                //
             },
             $ctor2: function (startColor, endColor) {
                 System.Windows.Media.RadialGradientBrush.$ctor1.call(this, System.Array.init([new System.Windows.Media.GradientStop.$ctor1(startColor, 0), new System.Windows.Media.GradientStop.$ctor1(endColor, 1)], System.Windows.Media.GradientStop));
-                //
             },
             $ctor1: function (gradientStops) {
                 this.$initialize();
                 System.Windows.Media.GradientBrush.$ctor1.call(this, gradientStops);
-                //
             }
         },
         methods: {
@@ -29957,7 +29677,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.ContentControl.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -29978,15 +29697,9 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     command.System$Windows$Input$ICommand$Execute(this.CommandParameter);
                 }
             },
-            OnIsPressedChanged: function (e) {
-                //
-            },
-            OnPressStarted: function () {
-                //
-            },
-            OnPressEnded: function () {
-                //
-            },
+            OnIsPressedChanged: function (e) { },
+            OnPressStarted: function () { },
+            OnPressEnded: function () { },
             OnMouseDown: function (e) {
                 if (e.ChangedButton === System.Windows.Input.MouseButton.Left) {
                     this.Focus();
@@ -30292,9 +30005,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             OnLostFocus: function (e) {
                 System.Windows.Controls.Primitives.Selector.SetIsSelectionActive(this, false);
             },
-            OnSelectedIndexChanged: function (e) {
-                //
-            },
+            OnSelectedIndexChanged: function (e) { },
             OnSelectedItemChanged: function (e) {
                 if (e.OldValue != null) {
                     this.ItemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$ContainerFromItem(e.OldValue).SetCurrentValue(System.Windows.Controls.Primitives.Selector.IsSelectedProperty, Bridge.box(false, System.Boolean, System.Boolean.toString));
@@ -30304,9 +30015,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                     this.ItemContainerGenerator.System$Windows$Controls$Primitives$IItemContainerGenerator$ContainerFromItem(e.NewValue).SetCurrentValue(System.Windows.Controls.Primitives.Selector.IsSelectedProperty, Bridge.box(true, System.Boolean, System.Boolean.toString));
                 }
             },
-            OnSelectedValueChanged: function (e) {
-                //
-            }
+            OnSelectedValueChanged: function (e) { }
         }
     });
 
@@ -30593,7 +30302,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.Primitives.RangeBase.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -31203,9 +30911,7 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.ComputedVerticalScrollBarVisibility = System.Windows.Controls.ScrollViewer.GetScrollBarVisibility(this.VerticalScrollBarVisibility, false);
                 this.ComputedScrollBarsVisibility = this.ComputedHorizontalScrollBarVisibility === System.Windows.Visibility.Visible && this.ComputedVerticalScrollBarVisibility === System.Windows.Visibility.Visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 
-                // 3 passes, each pass can cause an overflow (and add a scrollbar which invalidates the measure), starting with no overlaps
                 for (var measurePass = 0; measurePass < 3; measurePass = (measurePass + 1) | 0) {
-                    // computed visibilities can invalidate the ScrollBars measure, invalidate their path so they will be re-measured through TemplateChild
                     System.Windows.Controls.ScrollViewer.InvalidateElementMeasurePath(this, this.HorizontalScrollBar);
                     System.Windows.Controls.ScrollViewer.InvalidateElementMeasurePath(this, this.VerticalScrollBar);
 
@@ -31486,7 +31192,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.TransitionAnimationTimeline$1(System.Windows.Media.Color).ctor.call(this, System.Windows.Media.Animation.ColorAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -31520,7 +31225,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 this.$initialize();
-                //
             }
         },
         methods: {
@@ -31545,7 +31249,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.KeyFramesAnimationTimeline$1(System.Windows.Media.Color).ctor.call(this, System.Windows.Media.Animation.ColorAnimationOperations.Default, true);
-                //
             }
         }
     });
@@ -31556,7 +31259,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.DiscreteKeyFrame$1(System.Windows.Media.Color).ctor.call(this, System.Windows.Media.Animation.ColorAnimationOperations.Default);
-                //
             }
         }
     });
@@ -31567,7 +31269,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.EasingKeyFrame$1(System.Windows.Media.Color).ctor.call(this, System.Windows.Media.Animation.ColorAnimationOperations.Default);
-                //
             }
         }
     });
@@ -31578,7 +31279,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Media.Animation.LinearKeyFrame$1(System.Windows.Media.Color).ctor.call(this, System.Windows.Media.Animation.ColorAnimationOperations.Default);
-                //
             }
         }
     });
@@ -31725,7 +31425,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             },
             methods: {
                 GetToggledState: function (currentState, isThreeState) {
-                    // false -> true [-> null] -> false
 
                     if (System.Nullable.eq(currentState, false)) {
                         return true;
@@ -31868,7 +31567,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.HeaderedContentControl.ctor.call(this);
-                //
             }
         },
         methods: {
@@ -31994,13 +31692,13 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 return new System.Windows.Controls.ListBoxItem();
             },
             OnPrepareContainerForItem: function (item, container) {
-                container.addPreviewMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerPreviewMouseDown)); // handled too
+                container.addPreviewMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerPreviewMouseDown));
                 container.addMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerMouseDown));
                 container.addKeyDown(Bridge.fn.cacheBind(this, this.OnItemContainerKeyDown));
                 container.addGotKeyboardFocus(Bridge.fn.cacheBind(this, this.OnItemContainerGotKeyboardFocus));
             },
             OnClearContainerForItem: function (item, container) {
-                container.removePreviewMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerPreviewMouseDown)); // handled too
+                container.removePreviewMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerPreviewMouseDown));
                 container.removeMouseDown(Bridge.fn.cacheBind(this, this.OnItemContainerMouseDown));
                 container.removeKeyDown(Bridge.fn.cacheBind(this, this.OnItemContainerKeyDown));
                 container.removeGotKeyboardFocus(Bridge.fn.cacheBind(this, this.OnItemContainerGotKeyboardFocus));
@@ -32132,7 +31830,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
                 this.timer.Stop();
             },
             OnTimerTick: function (sender, e) {
-                // the first interval can be different
                 if (this.timer.Interval.getTotalMilliseconds() !== this.Interval) {
                     this.timer.Stop();
                     this.timer.Interval = System.TimeSpan.fromMilliseconds(this.Interval);
@@ -32234,7 +31931,6 @@ Bridge.assembly("Granular.Presentation", function ($asm, globals) {
             ctor: function () {
                 this.$initialize();
                 System.Windows.Controls.Primitives.ToggleButton.ctor.call(this);
-                //
             }
         },
         methods: {

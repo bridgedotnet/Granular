@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Bridge;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Extensions;
 
 namespace System.Xml.Linq
@@ -14,7 +14,7 @@ namespace System.Xml.Linq
 
     public class XText : XNode
     {
-        public string Value { get { return node.NodeValue; } }
+        public string Value { get { return node.nodeValue; } }
 
         private Node node;
 
@@ -34,20 +34,20 @@ namespace System.Xml.Linq
             nodes = new XNode[0];
             elements = new XElement[0];
 
-            for (int i = 0; i < node.ChildNodes.Length; i++)
+            for (int i = 0; i < node.childNodes.length; i++)
             {
-                Node childNode = node.ChildNodes[i];
+                var childNode = node.childNodes[i];
 
-                if (childNode.NodeType == NodeType.Element)
+                if (childNode.nodeType == 1)
                 {
                     XElement childElement = new XElement((Element)childNode);
                     elements.Push(childElement);
                     nodes.Push(childElement);
                 }
 
-                if (childNode.NodeType == NodeType.Text && !childNode.NodeValue.IsNullOrWhiteSpace())
+                if (childNode.nodeType == 3 && !childNode.nodeValue.IsNullOrWhiteSpace())
                 {
-                    XText childText = new XText(childNode);
+                    XText childText = new XText(childNode.As<Element>());
                     nodes.Push(childText);
                 }
             }
@@ -74,13 +74,12 @@ namespace System.Xml.Linq
             base(node)
         {
             this.node = node;
-            this.Root = new XElement((Element)node.FirstChild);
+            this.Root = new XElement((Element)node.firstChild);
         }
 
         public static XDocument Parse(string text)
         {
-            DOMParser parser = new DOMParser();
-            return new XDocument(parser.ParseFromString(text, SupportedType.ApplicationXml));
+            return new XDocument(new Retyped.dom.DOMParser().parseFromString(text, "application/xml"));
         }
     }
 
@@ -97,10 +96,10 @@ namespace System.Xml.Linq
             this.element = element;
             this.Name = XName.Get(element.GetLocalName(), element.GetNamespaceURI());
 
-            this.attributes = new XAttribute[element.Attributes.Length];
+            this.attributes = new XAttribute[element.attributes.length.As<int>()];
             for (int i = 0; i < attributes.Length; i++)
             {
-                attributes[i] = new XAttribute(element.Attributes[i]);
+                attributes[i] = new XAttribute(element.attributes[i]);
             }
         }
 
@@ -145,7 +144,7 @@ namespace System.Xml.Linq
         {
             this.node = node;
 
-            string nodeName = node.NodeName;
+            string nodeName = node.nodeName;
 
             if (nodeName == "xmlns")
             {
@@ -158,7 +157,7 @@ namespace System.Xml.Linq
                 this.IsNamespaceDeclaration = nodeName.StartsWith("xmlns:");
             }
 
-            this.Value = node.NodeValue;
+            this.Value = node.nodeValue;
         }
     }
 
@@ -169,31 +168,7 @@ namespace System.Xml.Linq
 
         public static string GetLocalName(this Node node)
         {
-            return node.NodeName.Substring(node.NodeName.IndexOf(':') + 1);
+            return node.nodeName.Substring(node.nodeName.IndexOf(':') + 1);
         }
-    }
-
-    [External]
-    [Enum(Emit.StringName)]
-    public enum SupportedType
-    {
-        [Name("text/html")]
-        TextHtml,
-        [Name("text/xml")]
-        TextXml,
-        [Name("application/xml")]
-        ApplicationXml,
-        [Name("application/xhtml+xml")]
-        ApplicationXhtmlXml,
-        [Name("image/svg+xml")]
-        ImageSvgXml
-    };
-
-    [External]
-    [Name("DOMParser")]
-    public class DOMParser
-    {
-        [Name("parseFromString")]
-        public virtual extern DocumentInstance ParseFromString(string str, SupportedType type);
     }
 }

@@ -416,7 +416,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             ctor: function (reference) {
                 this.$initialize();
                 System.Attribute.ctor.call(this);
-                //
             }
         }
     });
@@ -1138,9 +1137,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 }
             },
             methods: {
-                RegisterPackUriParser: function () {
-                    //
-                },
+                RegisterPackUriParser: function () { },
                 CreateRelativeOrAbsoluteUri: function (relativeUriString) {
                     return new System.Uri(relativeUriString);
                 },
@@ -1594,9 +1591,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         $kind: "nested class",
         alias: ["Dispose", "System$IDisposable$Dispose"],
         methods: {
-            Dispose: function () {
-                //
-            }
+            Dispose: function () { }
         }
     });
 
@@ -1608,7 +1603,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
 
                 this.$initialize();
                 System.Exception.ctor.call(this, System.String.format.apply(System.String, [format].concat(args)));
-                //
             }
         },
         methods: {
@@ -1705,7 +1699,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             },
             methods: {
                 IsClose: function ($this, value) {
-                    // |a-b|/(|a|+|b|+1) < Epsilon
                     return ($this === value) || Granular.Extensions.DoubleExtensions.IsNaN($this) && Granular.Extensions.DoubleExtensions.IsNaN(value) || Math.abs($this - value) < Granular.Extensions.DoubleExtensions.Epsilon * (Math.abs($this) + Math.abs(value) + 1);
                 },
                 IsNaN: function ($this) {
@@ -2258,9 +2251,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
             System$Collections$IEnumerable$GetEnumerator: function () {
                 return this.GetEnumerator();
             },
-            copyTo: function (array, arrayIndex) {
-                //
-            },
+            copyTo: function (array, arrayIndex) { },
             contains: function (item) {
                 var value = { };
                 return this.tryGetValue(item.key, value) && Bridge.equals(item.value, value.v);
@@ -2382,16 +2373,13 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
                 var resourcesCount = this.binaryReader.ReadInt32();
                 var typesCount = this.binaryReader.ReadInt32();
 
-                // types name
                 Granular.Extensions.BinaryReaderExtensions.SkipStrings(this.binaryReader, typesCount);
 
                 var paddingCount = (7 - System.Int64.clip32((this.memoryStream.Position.add(System.Int64(7)))) % 8) | 0;
                 this.memoryStream.Seek(System.Int64(paddingCount), 1);
 
-                // hash
                 this.memoryStream.Seek(System.Int64(Bridge.Int.mul(resourcesCount, System.Resources.ResourceSet.Int32Size)), 1);
 
-                // offset
                 this.memoryStream.Seek(System.Int64(Bridge.Int.mul(resourcesCount, System.Resources.ResourceSet.Int32Size)), 1);
 
                 var dataOrigin = this.binaryReader.ReadInt32();
@@ -2911,7 +2899,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         ctors: {
             ctor: function ($namespace) {
                 System.Windows.Markup.NamespaceDeclaration.$ctor1.call(this, "", $namespace);
-                //
             },
             $ctor1: function (prefix, $namespace) {
                 this.$initialize();
@@ -3123,11 +3110,9 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         ctors: {
             $ctor1: function ($namespace) {
                 System.Windows.Markup.XamlNamespaces.ctor.call(this, System.Array.init([new System.Windows.Markup.NamespaceDeclaration.ctor($namespace)], System.Windows.Markup.NamespaceDeclaration));
-                //
             },
             $ctor2: function (prefix, $namespace) {
                 System.Windows.Markup.XamlNamespaces.ctor.call(this, System.Array.init([new System.Windows.Markup.NamespaceDeclaration.$ctor1(prefix, $namespace)], System.Windows.Markup.NamespaceDeclaration));
-                //
             },
             ctor: function (items) {
                 this.$initialize();
@@ -4024,7 +4009,6 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         ctors: {
             $ctor1: function (name, namespaces, sourceUri, value) {
                 System.Windows.Markup.XamlMember.ctor.call(this, name, namespaces, sourceUri, System.Array.init([value], System.Object));
-                //
             },
             ctor: function (name, namespaces, sourceUri, values) {
                 this.$initialize();
@@ -4157,15 +4141,12 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 Granular.Collections.ObservableCollection$1(T).$ctor2.call(this, new (System.Collections.Generic.List$1(T)).ctor());
-                //
             },
             $ctor1: function (collection) {
                 Granular.Collections.ObservableCollection$1(T).$ctor2.call(this, new (System.Collections.Generic.List$1(T)).$ctor1(collection));
-                //
             },
             $ctor3: function (capacity) {
                 Granular.Collections.ObservableCollection$1(T).$ctor2.call(this, new (System.Collections.Generic.List$1(T)).$ctor2(capacity));
-                //
             },
             $ctor2: function (items) {
                 this.$initialize();
@@ -4240,8 +4221,7 @@ Bridge.assembly("Granular.Common", function ($asm, globals) {
         statics: {
             methods: {
                 Parse: function (text) {
-                    var parser = new DOMParser();
-                    return new System.Xml.Linq.XDocument(parser.parseFromString(text, "application/xml"));
+                    return new System.Xml.Linq.XDocument(new DOMParser().parseFromString(text, "application/xml"));
                 }
             }
         },

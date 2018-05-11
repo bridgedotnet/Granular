@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Bridge.Html5;
+using static Retyped.dom;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -59,13 +59,11 @@ namespace Granular.Host
 
         public string Title
         {
-            get { return Bridge.Html5.Window.Document.Title; }
-            set { Bridge.Html5.Window.Document.Title = value; }
+            get { return window.document.title; }
+            set { window.document.title = value; }
         }
 
         private HtmlValueConverter converter;
-
-        private Bridge.Html5.WindowInstance window;
 
         private bool mouseDownHandled;
         private bool mouseMoveHandled;
@@ -84,36 +82,34 @@ namespace Granular.Host
             MouseDevice = new MouseDevice(this);
             KeyboardDevice = new KeyboardDevice(this);
 
-            window = Bridge.Html5.Window.Instance;
+            MouseDevice.CursorChanged += (sender, e) => window.document.body.SetHtmlStyleProperty("cursor", converter.ToCursorString(MouseDevice.Cursor, htmlRenderElementFactory));
+            window.document.body.SetHtmlStyleProperty("cursor", converter.ToCursorString(MouseDevice.Cursor, htmlRenderElementFactory));
 
-            MouseDevice.CursorChanged += (sender, e) => Bridge.Html5.Window.Document.Body.SetHtmlStyleProperty("cursor", converter.ToCursorString(MouseDevice.Cursor, htmlRenderElementFactory));
-            Bridge.Html5.Window.Document.Body.SetHtmlStyleProperty("cursor", converter.ToCursorString(MouseDevice.Cursor, htmlRenderElementFactory));
-
-            Bridge.Html5.Window.OnKeyDown = OnKeyDown;
-            Bridge.Html5.Window.OnKeyUp = OnKeyUp;
-            Bridge.Html5.Window.OnKeyPress = PreventKeyboardHandled;
-            Bridge.Html5.Window.OnMouseMove = OnMouseMove;
-            Bridge.Html5.Window.OnMouseDown = OnMouseDown;
-            Bridge.Html5.Window.OnMouseUp = OnMouseUp;
-            Bridge.Html5.Window.OnScroll = OnMouseWheel;
-            Bridge.Html5.Window.OnFocus = e => MouseDevice.Activate();
-            Bridge.Html5.Window.OnBlur = e => MouseDevice.Deactivate();
-            Bridge.Html5.Window.OnResize = e => SetRootElementSize();
-            Bridge.Html5.Window.OnClick = PreventMouseHandled;
-            Bridge.Html5.Window.OnContextMenu = PreventMouseHandled;
-            Bridge.Html5.Window.AddEventListener("ondblclick", PreventMouseHandled);
-            Bridge.Html5.Window.AddEventListener("wheel", OnMouseWheel);
+            window.onkeydown = OnKeyDown;
+            window.onkeyup = OnKeyUp;
+            window.onkeypress = PreventKeyboardHandled;
+            window.onmousemove = OnMouseMove;
+            window.onmousedown = OnMouseDown;
+            window.onmouseup = OnMouseUp;
+            window.onscroll = OnScroll;
+            window.onfocus = e => { MouseDevice.Activate(); return null; };
+            window.onblur = e => { MouseDevice.Deactivate(); return null; };
+            window.onresize = e => { SetRootElementSize(); return null; };
+            window.onclick = PreventMouseHandled;
+            window.oncontextmenu = PreventMouseHandled;
+            window.addEventListener("ondblclick", OnDblClick);
+            window.addEventListener("wheel", OnMouseWheel);
 
             SetRootElementSize();
-            ((FrameworkElement)RootElement).Arrange(new Rect(window.InnerWidth, window.InnerHeight));
+            ((FrameworkElement)RootElement).Arrange(new Rect(window.innerWidth, window.innerHeight));
 
             IHtmlRenderElement renderElement = ((IHtmlRenderElement)RootElement.GetRenderElement(htmlRenderElementFactory));
             renderElement.Load();
 
-            Bridge.Html5.Window.Document.Body.Style.Overflow = Overflow.Hidden;
-            Bridge.Html5.Window.Document.Body.AppendChild(imageElementContainer.HtmlElement);
-            Bridge.Html5.Window.Document.Body.AppendChild(svgDefinitionContainer.HtmlElement);
-            Bridge.Html5.Window.Document.Body.AppendChild(renderElement.HtmlElement);
+            window.document.body.style.overflow = "hidden";
+            window.document.body.appendChild(imageElementContainer.HtmlElement);
+            window.document.body.appendChild(svgDefinitionContainer.HtmlElement);
+            window.document.body.appendChild(renderElement.HtmlElement);
 
             MouseDevice.Activate();
             KeyboardDevice.Activate();
@@ -121,115 +117,134 @@ namespace Granular.Host
 
         private void SetRootElementSize()
         {
-            ((FrameworkElement)RootElement).Width = window.InnerWidth;
-            ((FrameworkElement)RootElement).Height = window.InnerHeight;
+            ((FrameworkElement)RootElement).Width = window.innerWidth;
+            ((FrameworkElement)RootElement).Height = window.innerHeight;
         }
 
-        private void OnKeyDown(Event e)
+        private object OnKeyDown(Event e)
         {
             KeyboardEvent keyboardEvent = (KeyboardEvent)e;
 
-            Key key = converter.ConvertBackKey(keyboardEvent.KeyCode, (KeyLocation)keyboardEvent.Location);
+            Key key = converter.ConvertBackKey(keyboardEvent.keyCode, keyboardEvent.location);
 
-            keyDownHandled = ProcessKeyboardEvent(new RawKeyboardEventArgs(key, KeyStates.Down, keyboardEvent.Repeat, GetTimestamp()));
+            keyDownHandled = ProcessKeyboardEvent(new RawKeyboardEventArgs(key, KeyStates.Down, keyboardEvent.repeat, GetTimestamp()));
 
             if (keyDownHandled)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void OnKeyUp(Event e)
+        private object OnKeyUp(Event e)
         {
             KeyboardEvent keyboardEvent = (KeyboardEvent)e;
 
-            Key key = converter.ConvertBackKey(keyboardEvent.KeyCode, (KeyLocation)keyboardEvent.Location);
+            Key key = converter.ConvertBackKey(keyboardEvent.keyCode, keyboardEvent.location);
 
-            keyUpHandled = ProcessKeyboardEvent(new RawKeyboardEventArgs(key, KeyStates.None, keyboardEvent.Repeat, GetTimestamp()));
+            keyUpHandled = ProcessKeyboardEvent(new RawKeyboardEventArgs(key, KeyStates.None, keyboardEvent.repeat, GetTimestamp()));
 
             if (keyDownHandled || keyUpHandled)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void PreventKeyboardHandled(Event e)
+        private object PreventKeyboardHandled(Event e)
         {
             if (keyDownHandled || keyUpHandled)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void OnMouseDown(Event e)
+        private object OnMouseDown(Event e)
         {
             MouseEvent mouseEvent = (MouseEvent)e;
 
-            Point position = new Point(mouseEvent.PageX, mouseEvent.PageY);
-            MouseButton button = converter.ConvertBackMouseButton(mouseEvent.Button);
+            Point position = new Point(mouseEvent.pageX, mouseEvent.pageY);
+            MouseButton button = converter.ConvertBackMouseButton(mouseEvent.button);
 
             mouseDownHandled = ProcessMouseEvent(new RawMouseButtonEventArgs(button, MouseButtonState.Pressed, position, GetTimestamp()));
 
             if (mouseDownHandled || MouseDevice.CaptureTarget != null)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void OnMouseUp(Event e)
+        private object OnMouseUp(Event e)
         {
             MouseEvent mouseEvent = (MouseEvent)e;
 
-            Point position = new Point(mouseEvent.PageX, mouseEvent.PageY);
-            MouseButton button = converter.ConvertBackMouseButton(mouseEvent.Button);
+            Point position = new Point(mouseEvent.pageX, mouseEvent.pageY);
+            MouseButton button = converter.ConvertBackMouseButton(mouseEvent.button);
 
             mouseUpHandled = ProcessMouseEvent(new RawMouseButtonEventArgs(button, MouseButtonState.Released, position, GetTimestamp()));
 
             if (mouseDownHandled || mouseMoveHandled || mouseUpHandled || MouseDevice.CaptureTarget != null)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
-        }
 
-        private void OnMouseWheel(Event e)
+            return e;
+        }
+        private object OnScroll(Event e)
         {
-            UIEvent uiEvent = (UIEvent)e;
+            MouseEvent uiEvent = (MouseEvent)e;
             WheelEvent wheelEvent = (WheelEvent)e;
 
-            Point position = new Point(uiEvent.PageX, uiEvent.PageY);
-            int delta = (wheelEvent).DeltaY > 0 ? -100 : 100;
+            Point position = new Point(uiEvent.pageX, uiEvent.pageY);
+            int delta = (wheelEvent).deltaY > 0 ? -100 : 100;
 
             if (ProcessMouseEvent(new RawMouseWheelEventArgs(delta, position, GetTimestamp())))
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void OnMouseMove(Event e)
+        private void OnMouseWheel(Event e) => OnScroll(e);
+
+        private object OnMouseMove(Event e)
         {
             if (!(e is MouseEvent))
             {
-                return;
+                return e;
             }
 
             MouseEvent mouseEvent = (MouseEvent)e;
 
-            Point position = new Point(mouseEvent.PageX, mouseEvent.PageY);
+            Point position = new Point(mouseEvent.pageX, mouseEvent.pageY);
 
             mouseMoveHandled = ProcessMouseEvent(new RawMouseEventArgs(position, GetTimestamp()));
 
             if (mouseDownHandled || mouseMoveHandled || MouseDevice.CaptureTarget != null)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void PreventMouseHandled(Event e)
+        private void OnDblClick(Event e) => PreventMouseHandled(e);
+
+        private object PreventMouseHandled(Event e)
         {
             if (mouseDownHandled || mouseMoveHandled || mouseUpHandled || MouseDevice.CaptureTarget != null)
             {
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
         public IInputElement HitTest(Point position)

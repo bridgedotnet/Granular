@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Compatibility.Linq;
 
 namespace Granular.Host.Render
@@ -77,22 +77,22 @@ namespace Granular.Host.Render
 
             HTMLElement htmlElement = HtmlElement;
 
-            while (htmlElement.ChildNodes.Length > gradientStops.Length)
+            while (htmlElement.childNodes.length > gradientStops.Length)
             {
-                htmlElement.RemoveChild(htmlElement.LastElementChild);
+                htmlElement.removeChild(htmlElement.lastElementChild);
             }
 
-            while (htmlElement.ChildNodes.Length < gradientStops.Length)
+            while (htmlElement.childNodes.length < gradientStops.Length)
             {
-                htmlElement.AppendChild(SvgDocument.CreateElement("stop"));
+                htmlElement.appendChild(SvgDocument.CreateElement("stop"));
             }
 
             for (int i = 0; i < gradientStops.Length; i++)
             {
-                Element stopElement = (Element)htmlElement.ChildNodes[i];
-                stopElement.SetAttribute("stop-color", converter.ToColorString(gradientStops[i].Color));
-                stopElement.SetAttribute("stop-opacity", converter.ToImplicitValueString(Opacity * gradientStops[i].Color.A / 255));
-                stopElement.SetAttribute("offset", converter.ToImplicitValueString(gradientStops[i].Offset));
+                Element stopElement = (Element)htmlElement.childNodes[i];
+                stopElement.setAttribute("stop-color", converter.ToColorString(gradientStops[i].Color));
+                stopElement.setAttribute("stop-opacity", converter.ToImplicitValueString(Opacity * gradientStops[i].Color.A / 255));
+                stopElement.setAttribute("offset", converter.ToImplicitValueString(gradientStops[i].Offset));
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Granular.Extensions;
 using System.Windows.Input;
+using static Retyped.dom;
 
 namespace Granular.Host.Render
 {
@@ -25,14 +26,14 @@ namespace Granular.Host.Render
 
                 if (contentElement != null)
                 {
-                    HtmlElement.RemoveChild(contentElement.HtmlElement);
+                    HtmlElement.removeChild(contentElement.HtmlElement);
                 }
 
                 contentElement = value;
 
                 if (contentElement != null)
                 {
-                    HtmlElement.AppendChild(contentElement.HtmlElement);
+                    HtmlElement.appendChild(contentElement.HtmlElement);
                 }
             }
         }
@@ -433,26 +434,26 @@ namespace Granular.Host.Render
             this.bounds = System.Windows.Rect.Empty;
             this.fontFamily = FontFamily.Default;
 
-            Bridge.Html5.HTMLElement styleElement = Bridge.Html5.Document.CreateElement("style");
-            styleElement.TextContent = "::-ms-clear { width: 0px; height: 0px; }";
+            HTMLElement styleElement = document.createElement("style");
+            styleElement.textContent = "::-ms-clear { width: 0px; height: 0px; }";
 
-            HtmlElement.AppendChild(styleElement);
+            HtmlElement.appendChild(styleElement);
 
             SetContentElement();
         }
 
         private void SetContentElement()
         {
-            Bridge.Html5.HTMLElement htmlElement;
+            HTMLElement htmlElement;
 
             if (IsPassword || !AcceptsReturn)
             {
-                htmlElement = Bridge.Html5.Document.CreateElement("input");
-                htmlElement.SetAttribute("type", IsPassword ? "password" : "text");
+                htmlElement = document.createElement("input");
+                htmlElement.setAttribute("type", IsPassword ? "password" : "text");
             }
             else
             {
-                htmlElement = Bridge.Html5.Document.CreateElement("textArea");
+                htmlElement = document.createElement("textArea");
             }
 
             ContentElement = new HtmlRenderElement(htmlElement);
@@ -487,23 +488,23 @@ namespace Granular.Host.Render
             ContentElement.HtmlElement.SetHtmlHorizontalScrollBarVisibility(HorizontalScrollBarVisibility, converter);
             ContentElement.HtmlElement.SetHtmlVerticalScrollBarVisibility(VerticalScrollBarVisibility, converter);
 
-            ContentElement.HtmlElement.OnInput += e => this.Text = ContentElement.HtmlElement.GetValue();
-            ContentElement.HtmlElement.OnKeyDown += OnContentElementKeyDown;
-            ContentElement.HtmlElement.OnSelect += e => GetContentElementSelection();
-            ContentElement.HtmlElement.OnKeyUp += e => GetContentElementSelection();
-            ContentElement.HtmlElement.OnMouseUp += e => GetContentElementSelection();
+            ContentElement.HtmlElement.oninput += e => { this.Text = ContentElement.HtmlElement.GetValue(); return e; };
+            ContentElement.HtmlElement.onkeydown += OnContentElementKeyDown;
+            ContentElement.HtmlElement.onselect += e => GetContentElementSelection();
+            ContentElement.HtmlElement.onkeyup += e => GetContentElementSelection();
+            ContentElement.HtmlElement.onmouseup += e => GetContentElementSelection();
         }
 
         public void Focus()
         {
             isFocused = true;
-            ContentElement.HtmlElement.Focus();
+            ContentElement.HtmlElement.focus();
         }
 
         public void ClearFocus()
         {
             isFocused = false;
-            ContentElement.HtmlElement.Blur();
+            ContentElement.HtmlElement.blur();
         }
 
         private void OnForegroundChanged(object sender, EventArgs e)
@@ -511,9 +512,9 @@ namespace Granular.Host.Render
             renderQueue.InvokeAsync(() => ContentElement.HtmlElement.SetHtmlForeground(Foreground, converter));
         }
 
-        private void OnContentElementKeyDown(Bridge.Html5.Event e)
+        private object OnContentElementKeyDown(Event e)
         {
-            if (!IsReadOnly && AcceptsTab && ((Bridge.Html5.KeyboardEvent)e).KeyCode == 9)
+            if (!IsReadOnly && AcceptsTab && ((KeyboardEvent)e).keyCode == 9)
             {
                 int selectionStart = SelectionStart;
 
@@ -524,11 +525,13 @@ namespace Granular.Host.Render
                 ContentElement.HtmlElement.SetSelectionEnd(selectionStart + 1);
                 GetContentElementSelection();
 
-                e.PreventDefault();
+                e.preventDefault();
             }
+
+            return e;
         }
 
-        private void GetContentElementSelection()
+        private object GetContentElementSelection()
         {
             int selectionStart = ContentElement.HtmlElement.GetSelectionStart();
             int selectionEnd = ContentElement.HtmlElement.GetSelectionEnd();
@@ -541,13 +544,15 @@ namespace Granular.Host.Render
                 this.SelectionLength = selectionEnd - selectionStart;
                 this.CaretIndex = changeIndex;
             }
+
+            return null;
         }
 
         private void SetContentElementCaretIndex()
         {
             if (isFocused && CaretIndex != SelectionStart && CaretIndex != SelectionStart + SelectionLength)
             {
-                ContentElement.HtmlElement.Focus();
+                ContentElement.HtmlElement.focus();
                 ContentElement.HtmlElement.SetCaretIndex(CaretIndex);
             }
         }
@@ -580,11 +585,11 @@ namespace Granular.Host.Render
         {
             if (maxLength > 0)
             {
-                ContentElement.HtmlElement.SetAttribute("maxLength", maxLength.ToString());
+                ContentElement.HtmlElement.setAttribute("maxLength", maxLength.ToString());
             }
             else
             {
-                ContentElement.HtmlElement.RemoveAttribute("maxLength");
+                ContentElement.HtmlElement.removeAttribute("maxLength");
             }
         }
 
@@ -592,22 +597,22 @@ namespace Granular.Host.Render
         {
             if (IsReadOnly)
             {
-                ContentElement.HtmlElement.SetAttribute("readonly", String.Empty);
+                ContentElement.HtmlElement.setAttribute("readonly", String.Empty);
             }
             else
             {
-                ContentElement.HtmlElement.RemoveAttribute("readonly");
+                ContentElement.HtmlElement.removeAttribute("readonly");
             }
         }
 
         private void SetContentElementSpellCheck()
         {
-            ContentElement.HtmlElement.SetAttribute("spellcheck", converter.ToBooleanString(SpellCheck));
+            ContentElement.HtmlElement.setAttribute("spellcheck", converter.ToBooleanString(SpellCheck));
         }
 
         private void SetContentElementTextWrapping()
         {
-            ContentElement.HtmlElement.SetAttribute("wrap", converter.ToWrapString(TextWrapping));
+            ContentElement.HtmlElement.setAttribute("wrap", converter.ToWrapString(TextWrapping));
         }
 
         public void ProcessKeyEvent(KeyEventArgs e)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Bridge.Html5;
+using static Retyped.dom;
 using System.Runtime.CompilerServices;
 using System.Text;
 

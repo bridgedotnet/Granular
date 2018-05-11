@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Bridge.Html5;
+using static Retyped.dom;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,8 +23,8 @@ namespace Granular.Host
         {
             if (htmlElement == null)
             {
-                htmlElement = Document.CreateElement("div");
-                Document.Body.AppendChild(htmlElement);
+                htmlElement = document.createElement("div");
+                document.body.appendChild(htmlElement);
             }
 
             htmlElement.SetHtmlStyleProperty("position", "absolute");
@@ -46,9 +46,9 @@ namespace Granular.Host
                 htmlElement.SetHtmlStyleProperty("max-width", converter.ToPixelString(maxWidth));
             }
 
-            htmlElement.InnerHTML = converter.ToHtmlContentString(text.DefaultIfNullOrEmpty("A"));
+            htmlElement.innerHTML = converter.ToHtmlContentString(text.DefaultIfNullOrEmpty("A"));
 
-            return new Size(text.IsNullOrEmpty() ? 0 : htmlElement.OffsetWidth + 2, htmlElement.OffsetHeight);
+            return new Size(text.IsNullOrEmpty() ? 0 : htmlElement.offsetWidth + 2, htmlElement.offsetHeight);
         }
     }
 }

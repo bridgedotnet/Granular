@@ -295,12 +295,10 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     var sin = direction.Y / directionLength;
                     var cos = direction.X / directionLength;
 
-                    // generated gradient image size
                     var generatedImageWidth = Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.Width + Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.Height;
                     var generatedImageHeight = Granular.Extensions.DoubleExtensions.Abs(sin) * targetSize.Width + Granular.Extensions.DoubleExtensions.Abs(cos) * targetSize.Height;
 
-                    // transformation from a unit square to the generated gradient image rectangle
-                    var matrix = System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.TranslationMatrix(-0.5, -0.5), System.Windows.Media.Matrix.ScalingMatrix(generatedImageWidth, generatedImageHeight)), new System.Windows.Media.Matrix(cos, sin, -sin, cos, 0, 0)), System.Windows.Media.Matrix.TranslationMatrix(targetSize.Width / 2, targetSize.Height / 2)); // translate to the target rectangle center
+                    var matrix = System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.op_Multiply(System.Windows.Media.Matrix.TranslationMatrix(-0.5, -0.5), System.Windows.Media.Matrix.ScalingMatrix(generatedImageWidth, generatedImageHeight)), new System.Windows.Media.Matrix(cos, sin, -sin, cos, 0, 0)), System.Windows.Media.Matrix.TranslationMatrix(targetSize.Width / 2, targetSize.Height / 2));
 
                     var relativeStart = System.Windows.Media.Matrix.op_Multiply$1(startPoint, matrix.Inverse);
                     var relativeEnd = System.Windows.Media.Matrix.op_Multiply$1(endPoint, matrix.Inverse);
@@ -627,7 +625,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                         return System.Windows.Input.MouseButton.Right;
                 }
 
-                throw new Granular.Exception("Unexpected button index \"{0}\"", [Bridge.box(buttonIndex, System.Int32)]);
+                throw new Granular.Exception("Unexpected button index \"{0}\"", [Bridge.box(buttonIndex, System.Double, System.Double.format, System.Double.getHashCode)]);
             },
             ConvertBackKey: function (keyCode, location) {
                 switch (keyCode) {
@@ -902,7 +900,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
         inherits: [System.Windows.IPresentationSource],
         fields: {
             converter: null,
-            window: null,
             mouseDownHandled: false,
             mouseMoveHandled: false,
             mouseUpHandled: false,
@@ -943,8 +940,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 this.MouseDevice = new System.Windows.Input.MouseDevice(this);
                 this.KeyboardDevice = new System.Windows.Input.KeyboardDevice(this);
 
-                this.window = window;
-
                 this.MouseDevice.addCursorChanged(Bridge.fn.bind(this, function (sender, e) {
                     Granular.Host.HtmlElementExtensions.SetHtmlStyleProperty(window.document.body, "cursor", converter.ToCursorString(this.MouseDevice.Cursor, htmlRenderElementFactory));
                 }));
@@ -956,17 +951,17 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 window.onmousemove = Bridge.fn.cacheBind(this, this.OnMouseMove);
                 window.onmousedown = Bridge.fn.cacheBind(this, this.OnMouseDown);
                 window.onmouseup = Bridge.fn.cacheBind(this, this.OnMouseUp);
-                window.onscroll = Bridge.fn.cacheBind(this, this.OnMouseWheel);
+                window.onscroll = Bridge.fn.cacheBind(this, this.OnScroll);
                 window.onfocus = Bridge.fn.bind(this, $asm.$.Granular.Host.PresentationSource.f1);
                 window.onblur = Bridge.fn.bind(this, $asm.$.Granular.Host.PresentationSource.f2);
                 window.onresize = Bridge.fn.bind(this, $asm.$.Granular.Host.PresentationSource.f3);
                 window.onclick = Bridge.fn.cacheBind(this, this.PreventMouseHandled);
                 window.oncontextmenu = Bridge.fn.cacheBind(this, this.PreventMouseHandled);
-                window.addEventListener("ondblclick", Bridge.fn.cacheBind(this, this.PreventMouseHandled));
+                window.addEventListener("ondblclick", Bridge.fn.cacheBind(this, this.OnDblClick));
                 window.addEventListener("wheel", Bridge.fn.cacheBind(this, this.OnMouseWheel));
 
                 this.SetRootElementSize();
-                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Arrange(new System.Windows.Rect.ctor(this.window.innerWidth, this.window.innerHeight));
+                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Arrange(new System.Windows.Rect.ctor(window.innerWidth, window.innerHeight));
 
                 var renderElement = Bridge.cast(this.RootElement.GetRenderElement(htmlRenderElementFactory), Granular.Host.Render.IHtmlRenderElement);
                 renderElement.Granular$Host$Render$IHtmlRenderElement$Load();
@@ -984,8 +979,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
             addHitTestInvalidated: function (value) { },
             removeHitTestInvalidated: function (value) { },
             SetRootElementSize: function () {
-                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Width = this.window.innerWidth;
-                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Height = this.window.innerHeight;
+                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Width = window.innerWidth;
+                Bridge.cast(this.RootElement, System.Windows.FrameworkElement).Height = window.innerHeight;
             },
             OnKeyDown: function (e) {
                 var keyboardEvent = Bridge.cast(e, KeyboardEvent);
@@ -997,6 +992,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.keyDownHandled) {
                     e.preventDefault();
                 }
+
+                return e;
             },
             OnKeyUp: function (e) {
                 var keyboardEvent = Bridge.cast(e, KeyboardEvent);
@@ -1008,11 +1005,15 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.keyDownHandled || this.keyUpHandled) {
                     e.preventDefault();
                 }
+
+                return e;
             },
             PreventKeyboardHandled: function (e) {
                 if (this.keyDownHandled || this.keyUpHandled) {
                     e.preventDefault();
                 }
+
+                return e;
             },
             OnMouseDown: function (e) {
                 var mouseEvent = Bridge.cast(e, MouseEvent);
@@ -1025,6 +1026,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.mouseDownHandled || this.MouseDevice.CaptureTarget != null) {
                     e.preventDefault();
                 }
+
+                return e;
             },
             OnMouseUp: function (e) {
                 var mouseEvent = Bridge.cast(e, MouseEvent);
@@ -1037,9 +1040,11 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.mouseDownHandled || this.mouseMoveHandled || this.mouseUpHandled || this.MouseDevice.CaptureTarget != null) {
                     e.preventDefault();
                 }
+
+                return e;
             },
-            OnMouseWheel: function (e) {
-                var uiEvent = Bridge.cast(e, UIEvent);
+            OnScroll: function (e) {
+                var uiEvent = Bridge.cast(e, MouseEvent);
                 var wheelEvent = Bridge.cast(e, WheelEvent);
 
                 var position = new System.Windows.Point.$ctor1(uiEvent.pageX, uiEvent.pageY);
@@ -1048,10 +1053,15 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.ProcessMouseEvent(new System.Windows.Input.RawMouseWheelEventArgs(delta, position, this.GetTimestamp()))) {
                     e.preventDefault();
                 }
+
+                return e;
+            },
+            OnMouseWheel: function (e) {
+                this.OnScroll(e);
             },
             OnMouseMove: function (e) {
                 if (!(Bridge.is(e, MouseEvent))) {
-                    return;
+                    return e;
                 }
 
                 var mouseEvent = Bridge.cast(e, MouseEvent);
@@ -1063,17 +1073,24 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 if (this.mouseDownHandled || this.mouseMoveHandled || this.MouseDevice.CaptureTarget != null) {
                     e.preventDefault();
                 }
+
+                return e;
+            },
+            OnDblClick: function (e) {
+                this.PreventMouseHandled(e);
             },
             PreventMouseHandled: function (e) {
                 if (this.mouseDownHandled || this.mouseMoveHandled || this.mouseUpHandled || this.MouseDevice.CaptureTarget != null) {
                     e.preventDefault();
                 }
+
+                return e;
             },
             HitTest: function (position) {
                 return Bridge.as(this.RootElement.HitTest(position), System.Windows.IInputElement);
             },
             GetTimestamp: function () {
-                return 0; //(int)(DateTime.Now.GetTime());
+                return 0;
             },
             ProcessKeyboardEvent: function (keyboardEventArgs) {
                 return System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(System.Boolean, Bridge.fn.bind(this, function () {
@@ -1093,12 +1110,15 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
     Bridge.apply($asm.$.Granular.Host.PresentationSource, {
         f1: function (e) {
             this.MouseDevice.Activate();
+            return null;
         },
         f2: function (e) {
             this.MouseDevice.Deactivate();
+            return null;
         },
         f3: function (e) {
             this.SetRootElementSize();
+            return null;
         }
     });
 
@@ -1182,12 +1202,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     this.OnUnload();
                 }
             },
-            OnLoad: function () {
-                //
-            },
-            OnUnload: function () {
-                //
-            }
+            OnLoad: function () { },
+            OnUnload: function () { }
         }
     });
 
@@ -1779,7 +1795,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
         alias: ["ScheduleTask", "System$Windows$Threading$ITaskScheduler$ScheduleTask"],
         methods: {
             ScheduleTask: function (timeSpan, action) {
-                var token = window.setTimeout(action, Bridge.Int.clip32(timeSpan.getTotalMilliseconds()));
+                var token = window.setTimeout(action, timeSpan.getTotalMilliseconds());
+
                 return new Granular.Disposable(function () {
                     window.clearTimeout(token);
                 });
@@ -1825,7 +1842,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
 
                 this.htmlElement.innerHTML = this.converter.ToHtmlContentString(Granular.Extensions.StringExtensions.DefaultIfNullOrEmpty(text, "A"));
 
-                return new System.Windows.Size(Granular.Extensions.StringExtensions.IsNullOrEmpty(text) ? 0 : ((this.htmlElement.offsetWidth + 2) | 0), this.htmlElement.offsetHeight);
+                return new System.Windows.Size(Granular.Extensions.StringExtensions.IsNullOrEmpty(text) ? 0 : this.htmlElement.offsetWidth + 2, this.htmlElement.offsetHeight);
             }
         }
     });
@@ -1864,6 +1881,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
             Run: function (applicationEntryPoint) {
                 window.onload = Bridge.fn.combine(window.onload, function (e) {
                     applicationEntryPoint();
+
+                    return e;
                 });
             }
         }
@@ -1883,7 +1902,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
         ctors: {
             ctor: function () {
                 Granular.Host.Render.HtmlRenderElement.$ctor1.call(this, document.createElement("div"));
-                //
             },
             $ctor1: function (htmlElement) {
                 this.$initialize();
@@ -1907,12 +1925,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 this.IsLoaded = false;
                 this.OnUnload();
             },
-            OnLoad: function () {
-                //
-            },
-            OnUnload: function () {
-                //
-            }
+            OnLoad: function () { },
+            OnUnload: function () { }
         }
     });
 
@@ -1961,9 +1975,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
 
                 this.svgDefinitionContainer.Remove(this);
             },
-            OnOpacityChanged: function () {
-                //
-            }
+            OnOpacityChanged: function () { }
         }
     });
 
@@ -2245,7 +2257,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 Granular.Host.HtmlElementExtensions.SetHtmlBounds(this.HtmlElement, new System.Windows.Rect.$ctor2(this.Bounds.Location, System.Windows.SizeExtensions.Max((System.Windows.Size.op_Subtraction(this.Bounds.Size, this.BorderThickness.Size)), System.Windows.Size.Zero)), this.converter);
             },
             SetCornerRadius: function () {
-                // CornerRadius is relative to the center of the border line, interpolate the outline radius
                 var borderOutlineCornerRadius = System.Windows.CornerRadius.op_Equality(this.CornerRadius, System.Windows.CornerRadius.Zero) ? System.Windows.CornerRadius.Zero : new System.Windows.CornerRadius.$ctor1(this.CornerRadius.TopLeft + (this.BorderThickness.Top + this.BorderThickness.Left) / 4, this.CornerRadius.TopRight + (this.BorderThickness.Top + this.BorderThickness.Right) / 4, this.CornerRadius.BottomRight + (this.BorderThickness.Bottom + this.BorderThickness.Right) / 4, this.CornerRadius.BottomLeft + (this.BorderThickness.Bottom + this.BorderThickness.Left) / 4);
 
                 Granular.Host.HtmlElementExtensions.SetHtmlCornerRadius(this.HtmlElement, borderOutlineCornerRadius, this.converter);
@@ -2795,13 +2806,6 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                 Granular.Host.SvgElementExtensions.SetSvgFontStyle(this.HtmlElement, this.FormattedText.Typeface.Style, this.converter);
                 Granular.Host.SvgElementExtensions.SetSvgFontWeight(this.HtmlElement, this.FormattedText.Typeface.Weight, this.converter);
                 Granular.Host.SvgElementExtensions.SetSvgFontSize(this.HtmlElement, this.FormattedText.Size, this.converter);
-                //HtmlElement.SetSvgFlowDirection(FormattedText.FlowDirection, converter);
-                //HtmlElement.SetSvgLineHeight(FormattedText.LineHeight, converter;
-                //HtmlElement.SetSvgLineCount(FormattedText.MaxLineCount, converter);
-                //HtmlElement.SetSvgMaxHeight(FormattedText.MaxTextHeight, converter);
-                //HtmlElement.SetSvgMaxWidth(FormattedText.MaxTextWidth, converter);
-                //HtmlElement.SetSvgTextAlignment(FormattedText.TextAlignment, converter);
-                //HtmlElement.SetSvgTextTrimming(FormattedText.Trimming);
                 this.HtmlElement.textContent = this.FormattedText.Text;
             }
         }
@@ -3807,6 +3811,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
 
                     e.preventDefault();
                 }
+
+                return e;
             },
             GetContentElementSelection: function () {
                 var selectionStart = this.ContentElement.HtmlElement.selectionStart;
@@ -3819,6 +3825,8 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     this.SelectionLength = (selectionEnd - selectionStart) | 0;
                     this.CaretIndex = changeIndex;
                 }
+
+                return null;
             },
             SetContentElementCaretIndex: function () {
                 var $t;
@@ -3927,9 +3935,10 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
         },
         f14: function (e) {
             this.Text = this.ContentElement.HtmlElement.value;
+            return e;
         },
         f15: function (e) {
-            this.GetContentElementSelection();
+            return this.GetContentElementSelection();
         }
     });
 
@@ -4329,6 +4338,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
                     var htmlElement = document.createElement(Granular.Host.Render.HtmlVisualRenderElement.GetElementTagName(owner));
 
                     var htmlElementId = Granular.Host.Render.HtmlVisualRenderElement.GetElementId(owner);
+
                     if (!Granular.Extensions.StringExtensions.IsNullOrEmpty(htmlElementId)) {
                         htmlElement.id = htmlElementId;
                     }

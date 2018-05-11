@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Granular.Extensions;
+using static Retyped.dom;
 
 namespace Granular.Host.Render
 {
@@ -39,7 +40,7 @@ namespace Granular.Host.Render
         private EmbeddedResourceObjectFactory objectFactory;
         private ImageElementContainer container;
 
-        private Bridge.Html5.HTMLElement image;
+        private HTMLElement image;
 
         public HtmlImageSourceRenderResource(EmbeddedResourceObjectFactory objectFactory, ImageElementContainer container)
         {
@@ -65,19 +66,19 @@ namespace Granular.Host.Render
                 State = RenderImageState.DownloadProgress;
             }
 
-            image = Bridge.Html5.Document.CreateElement("img");
-            image.AddEventListener("load", OnImageLoad);
-            image.AddEventListener("error", OnImageError);
-            image.AddEventListener("abort", OnImageAbort);
+            image = document.createElement("img");
+            image.addEventListener("load", OnImageLoad);
+            image.addEventListener("error", OnImageError);
+            image.addEventListener("abort", OnImageAbort);
 
             container.Add(image);
 
-            image.SetAttribute("src", Url);
+            image.setAttribute("src", Url);
         }
 
         private void OnImageLoad()
         {
-            ImageSize = new Size(image.ClientWidth, image.ClientHeight);
+            ImageSize = new Size(image.clientWidth, image.clientHeight);
             Size = !SourceRect.IsNullOrEmpty() ? SourceRect.Size : ImageSize;
             State = RenderImageState.DownloadCompleted;
             container.Remove(image);
