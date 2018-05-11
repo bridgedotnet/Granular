@@ -1,4 +1,4 @@
-﻿using Bridge.Html5;
+﻿using static Retyped.dom;
 using System;
 using System.Collections.Generic;
 using System.Linq;

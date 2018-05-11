@@ -8,7 +8,7 @@ using System.Windows.Media;
 using Granular.Collections;
 using Granular.Extensions;
 using Granular.Host.Render;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host
 {
@@ -16,24 +16,24 @@ namespace Granular.Host
     {
         public static void InsertChild(this HTMLElement element, int index, HTMLElement child)
         {
-            if (index < element.ChildElementCount)
+            if (index < element.childElementCount)
             {
-                element.InsertBefore(child, element.Children[index]);
+                element.insertBefore(child, element.children[index]);
             }
             else
             {
-                element.AppendChild(child);
+                element.appendChild(child);
             }
         }
 
         public static void SetHtmlStyleProperty(this HTMLElement element, string key, string value)
         {
-            element.Style.SetProperty(key, value);
+            element.style.setProperty(key, value);
         }
 
         public static void ClearHtmlStyleProperty(this HTMLElement element, string key)
         {
-            element.Style.RemoveProperty(key);
+            element.style.removeProperty(key);
         }
 
         public static void SetHtmlBackground(this HTMLElement element, Brush background, Rect targetRect, IRenderElementFactory factory, HtmlValueConverter converter)

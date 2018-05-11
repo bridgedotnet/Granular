@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Granular.Extensions;
+using static Retyped.dom;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Granular.UnitTesting
@@ -17,9 +18,9 @@ namespace Granular.UnitTesting
             int testsCount;
             int testsPassed;
 
-            if (!Bridge.Html5.Window.Location.Hash.IsNullOrEmpty())
+            if (!window.location.hash.IsNullOrEmpty())
             {
-                string testName = Bridge.Html5.Window.Location.Hash.TrimStart('#');
+                string testName = window.location.hash.TrimStart('#');
                 RunTest(testAssembly, testName, false, out testsCount, out testsPassed);
             }
             else

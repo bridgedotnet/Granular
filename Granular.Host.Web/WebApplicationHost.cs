@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using Granular.Host.Render;
+using static Retyped.dom;
 
 namespace Granular.Host
 {
@@ -34,7 +35,12 @@ namespace Granular.Host
 
         public void Run(Action applicationEntryPoint)
         {
-            Bridge.Html5.Window.OnLoad += e => applicationEntryPoint();
+            window.onload += e =>
+            {
+                applicationEntryPoint();
+
+                return e;
+            };
         }
     }
 }

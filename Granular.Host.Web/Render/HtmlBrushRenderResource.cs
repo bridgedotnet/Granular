@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host.Render
 {
@@ -37,7 +37,7 @@ namespace Granular.Host.Render
 
             string elementName = $"{tagName}{svgDefinitionContainer.GetNextId()}";
             this.Uri = $"url(#{elementName})";
-            this.HtmlElement.SetAttribute("id", elementName);
+            this.HtmlElement.setAttribute("id", elementName);
         }
 
         protected override void OnLoad()

@@ -1,5 +1,9 @@
 {
-    "fileName":  "Granular.Host.js",
-    "outputBy": "Project",
-    "fileNameCasing": "None",
+  "fileName": "Granular.Host.js",
+  "outputBy": "Project",
+  "fileNameCasing": "None",
+  "rules": {
+    "externalCast": "Plain",
+    "inlineComment": "Plain"
+  }
 }

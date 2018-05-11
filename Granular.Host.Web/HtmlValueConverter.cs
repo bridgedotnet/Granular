@@ -404,7 +404,7 @@ namespace Granular.Host
                 Math.Round(matrix.OffsetY, 2));
         }
 
-        public MouseButton ConvertBackMouseButton(int buttonIndex)
+        public MouseButton ConvertBackMouseButton(double buttonIndex)
         {
             switch (buttonIndex)
             {
@@ -416,16 +416,16 @@ namespace Granular.Host
             throw new Granular.Exception("Unexpected button index \"{0}\"", buttonIndex);
         }
 
-        public Key ConvertBackKey(int keyCode, Bridge.Html5.KeyLocation location)
+        public Key ConvertBackKey(double keyCode, double location)
         {
             switch (keyCode)
             {
                 case 8: return Key.Back;
                 case 9: return Key.Tab;
                 case 13: return Key.Enter;
-                case 16: return location == Bridge.Html5.KeyLocation.Left ? Key.LeftShift : Key.RightShift;
-                case 17: return location == Bridge.Html5.KeyLocation.Left ? Key.LeftCtrl : Key.RightCtrl;
-                case 18: return location == Bridge.Html5.KeyLocation.Left ? Key.LeftAlt : Key.RightAlt;
+                case 16: return location == 1 ? Key.LeftShift : Key.RightShift;
+                case 17: return location == 1 ? Key.LeftCtrl : Key.RightCtrl;
+                case 18: return location == 1 ? Key.LeftAlt : Key.RightAlt;
                 case 19: return Key.Pause;
                 case 20: return Key.CapsLock;
                 case 27: return Key.Escape;
@@ -477,7 +477,7 @@ namespace Granular.Host
                 case 88: return Key.X;
                 case 89: return Key.Y;
                 case 90: return Key.Z;
-                case 91: return location == Bridge.Html5.KeyLocation.Left ? Key.LWin : Key.RWin;
+                case 91: return location == 1 ? Key.LWin : Key.RWin;
                 case 93: return Key.Apps;
                 case 96: return Key.NumPad0;
                 case 97: return Key.NumPad1;

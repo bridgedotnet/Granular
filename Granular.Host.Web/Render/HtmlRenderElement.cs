@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Bridge.Html5;
+using static Retyped.dom;
 using System.Linq;
 using System.Text;
 using Granular.Extensions;
@@ -25,7 +25,7 @@ namespace Granular.Host.Render
         public bool IsLoaded { get; private set; }
 
         public HtmlRenderElement() :
-            this(Document.CreateElement("div"))
+            this(document.createElement("div"))
         {
             //
         }

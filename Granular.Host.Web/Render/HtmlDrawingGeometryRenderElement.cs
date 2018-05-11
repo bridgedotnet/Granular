@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using Granular.Compatibility.Linq;
 using Granular.Extensions;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host.Render
 {

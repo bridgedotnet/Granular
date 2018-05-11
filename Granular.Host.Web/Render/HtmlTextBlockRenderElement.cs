@@ -22,7 +22,7 @@ namespace Granular.Host.Render
                 }
 
                 text = value;
-                renderQueue.InvokeAsync(() => HtmlElement.TextContent = text);
+                renderQueue.InvokeAsync(() => HtmlElement.textContent = text);
             }
         }
 

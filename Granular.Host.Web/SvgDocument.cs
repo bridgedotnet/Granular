@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host
 {
@@ -14,7 +14,7 @@ namespace Granular.Host
 
         public static HTMLElement CreateElement(string qualifiedName)
         {
-            return Document.CreateElementNS(NamespaceUri, qualifiedName);
+            return (HTMLElement)document.createElementNS(NamespaceUri, qualifiedName);
         }
     }
 }
