@@ -38,14 +38,14 @@ namespace System.Xml.Linq
             {
                 Node childNode = (Node)node.childNodes[i];
 
-                if (childNode.nodeType == NodeType.ELEMENT_NODE)
+                if (childNode.nodeType == 1)
                 {
                     XElement childElement = new XElement((Element)childNode);
                     elements.Push(childElement);
                     nodes.Push(childElement);
                 }
 
-                if (childNode.nodeType == NodeType.TEXT_NODE && !childNode.nodeValue.IsNullOrWhiteSpace())
+                if (childNode.nodeType == 3 && !childNode.nodeValue.IsNullOrWhiteSpace())
                 {
                     XText childText = new XText(childNode);
                     nodes.Push(childText);
