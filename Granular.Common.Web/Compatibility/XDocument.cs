@@ -36,7 +36,7 @@ namespace System.Xml.Linq
 
             for (int i = 0; i < node.childNodes.length; i++)
             {
-                Node childNode = (Node)node.childNodes[i];
+                var childNode = node.childNodes[i];
 
                 if (childNode.nodeType == 1)
                 {
@@ -47,7 +47,7 @@ namespace System.Xml.Linq
 
                 if (childNode.nodeType == 3 && !childNode.nodeValue.IsNullOrWhiteSpace())
                 {
-                    XText childText = new XText(childNode);
+                    XText childText = new XText(childNode.As<Element>());
                     nodes.Push(childText);
                 }
             }
@@ -96,7 +96,7 @@ namespace System.Xml.Linq
             this.element = element;
             this.Name = XName.Get(element.GetLocalName(), element.GetNamespaceURI());
 
-            this.attributes = new XAttribute[(int)element.attributes.length];
+            this.attributes = new XAttribute[element.attributes.length.As<int>()];
             for (int i = 0; i < attributes.Length; i++)
             {
                 attributes[i] = new XAttribute(element.attributes[i]);
