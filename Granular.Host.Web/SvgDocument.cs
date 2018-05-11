@@ -14,7 +14,7 @@ namespace Granular.Host
 
         public static HTMLElement CreateElement(string qualifiedName)
         {
-            return (HTMLElement)document.createElementNS(NamespaceUri, qualifiedName);
+            return document.createElementNS(NamespaceUri, qualifiedName).As<HTMLElement>();
         }
     }
 }

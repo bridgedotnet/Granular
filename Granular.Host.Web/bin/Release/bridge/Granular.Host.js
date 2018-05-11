@@ -1511,7 +1511,7 @@ Bridge.assembly("Granular.Host", function ($asm, globals) {
             },
             methods: {
                 CreateElement: function (qualifiedName) {
-                    return Bridge.cast(document.createElementNS(Granular.Host.SvgDocument.NamespaceUri, qualifiedName), HTMLElement);
+                    return document.createElementNS(Granular.Host.SvgDocument.NamespaceUri, qualifiedName);
                 }
             }
         }
