@@ -26,6 +26,12 @@ namespace System.Windows
             //
         }
 
+        public DependencyPropertyChangedEventArgs() :
+            this(null, null, null, true)
+        {
+            //
+        }
+
         private DependencyPropertyChangedEventArgs(DependencyProperty property, object oldValue, object newValue, bool isSubPropertyChange)
         {
             this.Property = property;

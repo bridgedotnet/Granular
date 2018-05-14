@@ -42,6 +42,11 @@ namespace Granular.Presentation.Tests.Controls
                 Containers.Remove(item);
             }
 
+            public bool IsItemItsOwnContainer(object item)
+            {
+                throw new NotImplementedException();
+            }
+
             public void PrepareContainerForItem(object item, FrameworkElement container)
             {
                 container.SetValue(ItemForItemContainerProperty, item);

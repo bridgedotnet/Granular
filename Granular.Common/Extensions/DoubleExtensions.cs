@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Granular.Extensions
 {
     public static class DoubleExtensions
     {
+        internal const double DBL_EPSILON = 2.2204460492503131e-016; /* smallest such that 1.0+DBL_EPSILON != 1.0 */
         private const double Epsilon = 1e-10;
 
         public static bool IsClose(this double @this, double value)
@@ -47,6 +46,19 @@ namespace Granular.Extensions
         public static double Abs(this double @this)
         {
             return Math.Abs(@this);
+        }
+
+        /// <summary>
+        /// IsOne - Returns whether or not the double is "close" to 1.  Same as AreClose(double, 1),
+        /// but this is faster.
+        /// </summary>
+        /// <returns>
+        /// bool - the result of the AreClose comparision.
+        /// </returns>
+        /// <param name="value"> The double to compare to 1. </param>
+        public static bool IsOne(this double value)
+        {
+            return Math.Abs(value - 1.0) < 10.0 * DBL_EPSILON;
         }
     }
 }

@@ -88,8 +88,8 @@ namespace System.Windows.Controls
             if (container == null)
             {
                 container = new GeneratedItemContainer(host.GetContainerForItem(host.View[index]), host.View[index], index);
-                host.PrepareContainerForItem(container.Item, container.Container);
                 generatedContainers.Add(container);
+                host.PrepareContainerForItem(container.Item, container.Container);              
             }
 
             return container.Container;
@@ -150,6 +150,12 @@ namespace System.Windows.Controls
         {
             GeneratedItemContainer generatedItemContainer = generatedContainers.FirstOrDefault(c => c.Container == container);
             return generatedItemContainer != null ? generatedItemContainer.Item : null;
+        }
+
+        public DependencyObject ContainerFromIndex(int index)
+        {
+            GeneratedItemContainer generatedItemContainer = generatedContainers.ElementAtOrDefault(index);
+            return generatedItemContainer != null ? generatedItemContainer.Container : null;
         }
 
         public int IndexFromContainer(DependencyObject container)

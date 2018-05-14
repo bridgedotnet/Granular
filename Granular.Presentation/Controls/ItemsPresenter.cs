@@ -96,5 +96,13 @@ namespace System.Windows.Controls
 
             Panel = VisualChildren.FirstOrDefault() as Panel;
         }
+
+        internal static ItemsPresenter FromPanel(Panel panel)
+        {
+            if (panel == null)
+                return null;
+
+            return panel.TemplatedParent as ItemsPresenter;
+        }
     }
 }

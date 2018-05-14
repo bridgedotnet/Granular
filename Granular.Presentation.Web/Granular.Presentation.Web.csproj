@@ -85,6 +85,54 @@
     <Compile Include="..\Granular.Presentation\Controls\ControlTemplate.cs">
       <Link>Controls\ControlTemplate.cs</Link>
     </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGrid.cs">
+      <Link>Controls\DataGrid.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridBoundColumn.cs">
+      <Link>Controls\DataGridBoundColumn.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridCell.cs">
+      <Link>Controls\DataGridCell.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridCellsPanel.cs">
+      <Link>Controls\DataGridCellsPanel.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridColumn.cs">
+      <Link>Controls\DataGridColumn.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridColumnCollection.cs">
+      <Link>Controls\DataGridColumnCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridColumnHeaderCollection.cs">
+      <Link>Controls\DataGridColumnHeaderCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridGridLinesVisibility.cs">
+      <Link>Controls\DataGridGridLinesVisibility.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridHeadersVisibility.cs">
+      <Link>Controls\DataGridHeadersVisibility.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridHelper.cs">
+      <Link>Controls\DataGridHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridLength.cs">
+      <Link>Controls\DataGridLength.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridLengthConverter.cs">
+      <Link>Controls\DataGridLengthConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridLengthUnitType.cs">
+      <Link>Controls\DataGridLengthUnitType.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridNotificationTarget.cs">
+      <Link>Controls\DataGridNotificationTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridRow.cs">
+      <Link>Controls\DataGridRow.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridTextColumn.cs">
+      <Link>Controls\DataGridTextColumn.cs</Link>
+    </Compile>
     <Compile Include="..\Granular.Presentation\Controls\DataTemplateSelector.cs">
       <Link>Controls\DataTemplateSelector.cs</Link>
     </Compile>
@@ -108,6 +156,9 @@
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Image.cs">
       <Link>Controls\Image.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\IProvideDataGridColumn.cs">
+      <Link>Controls\IProvideDataGridColumn.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\ItemCollection.cs">
       <Link>Controls\ItemCollection.cs</Link>
@@ -142,11 +193,23 @@
     <Compile Include="..\Granular.Presentation\Controls\Primitives\ButtonBase.cs">
       <Link>Controls\Primitives\ButtonBase.cs</Link>
     </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\Primitives\DataGridCellsPresenter.cs">
+      <Link>Controls\Primitives\DataGridCellsPresenter.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\Primitives\DataGridColumnHeader.cs">
+      <Link>Controls\Primitives\DataGridColumnHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\Primitives\DataGridColumnHeadersPresenter.cs">
+      <Link>Controls\Primitives\DataGridColumnHeadersPresenter.cs</Link>
+    </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Primitives\DragEventArgs.cs">
       <Link>Controls\Primitives\DragEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Primitives\ItemContainerGenerator.cs">
       <Link>Controls\Primitives\ItemContainerGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\Primitives\MultiSelector.cs">
+      <Link>Controls\Primitives\MultiSelector.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Primitives\Placement.cs">
       <Link>Controls\Primitives\Placement.cs</Link>
@@ -411,6 +474,9 @@
     </Compile>
     <Compile Include="..\Granular.Presentation\LayoutManager.cs">
       <Link>LayoutManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\LogicalTreeHelper.cs">
+      <Link>LogicalTreeHelper.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Markup\DeferredValueKeyProvider.cs">
       <Link>Markup\DeferredValueKeyProvider.cs</Link>

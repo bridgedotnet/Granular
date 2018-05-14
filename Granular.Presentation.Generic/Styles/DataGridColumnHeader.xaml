@@ -1,0 +1,13 @@
+﻿<ResourceDictionary
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:theme="clr-namespace:Granular.Presentation.Generic">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/Button.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ButtonBaseStyle}">
+    </Style>
+
+</ResourceDictionary> 
