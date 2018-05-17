@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace System.Windows.Controls
 {
+
+
     /// <summary>
     ///     A control for displaying a row of the DataGrid.
     ///     A row represents a data item in the DataGrid.
@@ -14,17 +17,29 @@ namespace System.Windows.Controls
     /// 
     ///     The data item for the row is added n times to the row's Items collection, 
     ///     where n is the number of columns in the DataGrid.
-    /// </summary>    
+    /// </summary>
+    [TemplateVisualState(VisualStates.CommonStates, VisualStates.NormalState)]
+    [TemplateVisualState(VisualStates.CommonStates, VisualStates.MouseOverState)]
+    [TemplateVisualState(VisualStates.CommonStates, VisualStates.DisabledState)]
+    [TemplateVisualState(VisualStates.SelectionStates, VisualStates.SelectedState)]
+    [TemplateVisualState(VisualStates.SelectionStates, VisualStates.SelectedUnfocusedState)]
+    [TemplateVisualState(VisualStates.SelectionStates, VisualStates.UnselectedState)]
+    [TemplateVisualState(VisualStates.FocusStates, VisualStates.FocusedState)]
+    [TemplateVisualState(VisualStates.FocusStates, VisualStates.UnfocusedState)]
     public class DataGridRow : Control
     {
         static DataGridRow()
         {
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DataGridRow), new FrameworkPropertyMetadata(new StyleKey(typeof(DataGridRow))));
-            FocusableProperty.OverrideMetadata(typeof(DataGridRow), new FrameworkPropertyMetadata(false));
+
+            UIElement.IsEnabledProperty.OverrideMetadata(typeof(DataGridRow), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.AffectsVisualState));
+            UIElement.IsMouseOverProperty.OverrideMetadata(typeof(DataGridRow), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.AffectsVisualState));
+            Selector.IsSelectionActiveProperty.OverrideMetadata(typeof(DataGridRow), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsVisualState));
         }
 
         public DataGridRow()
         {
+            _tracker = new ContainerTracking<DataGridRow>(this);
         }
 
         private DataGrid _owner;
@@ -56,6 +71,15 @@ namespace System.Windows.Controls
             }
 
             return null;
+        }
+
+        private ContainerTracking<DataGridRow> _tracker;
+        /// <summary>
+        ///     Used by the DataGrid owner to send notifications to the row container.
+        /// </summary>
+        internal ContainerTracking<DataGridRow> Tracker
+        {
+            get { return _tracker; }
         }
 
         #region Data Item
@@ -153,6 +177,169 @@ namespace System.Windows.Controls
             {
                 // SyncProperties(forcePrepareCells);
             }
+        }
+
+        #region Selection
+
+        /// <summary>
+        ///     Indicates whether this DataGridRow is selected.
+        /// </summary>
+        /// <remarks>
+        ///     When IsSelected is set to true, an InvalidOperationException may be
+        ///     thrown if the value of the SelectionUnit property on the parent DataGrid 
+        ///     prevents selection or rows.
+        /// </remarks>
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+        /// <summary>
+        ///     The DependencyProperty for the IsSelected property.
+        /// </summary>
+        public static readonly DependencyProperty IsSelectedProperty = Selector.IsSelectedProperty.AddOwner(
+            typeof(DataGridRow),
+            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnIsSelectedChanged)));
+
+        private static void OnIsSelectedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            DataGridRow row = (DataGridRow)sender;
+
+            bool isSelected = (bool)e.NewValue;
+
+            if (isSelected && !row.IsSelectable)
+            {
+                throw new Granular.Exception("Cannot select Row");
+            }
+
+            DataGrid grid = row.DataGridOwner;
+            if (grid != null && row.DataContext != null)
+            {
+                //DataGridAutomationPeer gridPeer = UIElementAutomationPeer.FromElement(grid) as DataGridAutomationPeer;
+                //if (gridPeer != null)
+                //{
+                //    DataGridItemAutomationPeer rowItemPeer = gridPeer.FindOrCreateItemAutomationPeer(row.DataContext) as DataGridItemAutomationPeer;
+                //    if (rowItemPeer != null)
+                //    {
+                //        rowItemPeer.RaisePropertyChangedEvent(
+                //            System.Windows.Automation.SelectionItemPatternIdentifiers.IsSelectedProperty,
+                //            (bool)e.OldValue,
+                //            isSelected);
+                //    }
+                //}
+            }
+
+            // Update the header's IsRowSelected property
+            row.NotifyPropertyChanged(row, e, DataGridNotificationTarget.Rows | DataGridNotificationTarget.RowHeaders);
+
+            // This will raise the appropriate selection event, which will
+            // bubble to the DataGrid. The base class Selector code will listen
+            // for these events and will update SelectedItems as necessary.
+            row.RaiseSelectionChangedEvent(isSelected);
+
+            row.UpdateVisualState();
+
+            // Update the header's IsRowSelected property
+            row.NotifyPropertyChanged(row, e, DataGridNotificationTarget.Rows | DataGridNotificationTarget.RowHeaders);
+        }
+
+        private void RaiseSelectionChangedEvent(bool isSelected)
+        {
+            if (isSelected)
+            {
+                OnSelected(new RoutedEventArgs(SelectedEvent, this));
+            }
+            else
+            {
+                OnUnselected(new RoutedEventArgs(UnselectedEvent, this));
+            }
+        }
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes true.
+        /// </summary>
+        public static readonly RoutedEvent SelectedEvent = Selector.SelectedEvent.AddOwner(typeof(DataGridRow));
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes true.
+        /// </summary>
+        public event RoutedEventHandler Selected
+        {
+            add
+            {
+                AddHandler(SelectedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(SelectedEvent, value);
+            }
+        }
+
+        /// <summary>
+        ///     Called when IsSelected becomes true. Raises the Selected event.
+        /// </summary>
+        /// <param name="e">Empty event arguments.</param>
+        protected virtual void OnSelected(RoutedEventArgs e)
+        {
+            RaiseEvent(e);
+        }
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes false.
+        /// </summary>
+        public static readonly RoutedEvent UnselectedEvent = Selector.UnselectedEvent.AddOwner(typeof(DataGridRow));
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes false.
+        /// </summary>
+        public event RoutedEventHandler Unselected
+        {
+            add
+            {
+                AddHandler(UnselectedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(UnselectedEvent, value);
+            }
+        }
+
+        /// <summary>
+        ///     Called when IsSelected becomes false. Raises the Unselected event.
+        /// </summary>
+        /// <param name="e">Empty event arguments.</param>
+        protected virtual void OnUnselected(RoutedEventArgs e)
+        {
+            RaiseEvent(e);
+        }
+
+        /// <summary>
+        ///     Determines if a row can be selected, based on the DataGrid's SelectionUnit property.
+        /// </summary>
+        private bool IsSelectable
+        {
+            get
+            {
+                DataGrid dataGrid = DataGridOwner;
+                if (dataGrid != null)
+                {
+                    DataGridSelectionUnit unit = dataGrid.SelectionUnit;
+                    return (unit == DataGridSelectionUnit.FullRow) ||
+                        (unit == DataGridSelectionUnit.CellOrRowHeader);
+                }
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            Focus();
         }
 
     }

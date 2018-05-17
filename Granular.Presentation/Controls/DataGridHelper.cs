@@ -108,6 +108,24 @@ namespace System.Windows.Controls
             return null;
         }
 
+        public static T FindVisualParent<T>(FrameworkElement element) where T : FrameworkElement
+        {
+            FrameworkElement parent = element.VisualParent as FrameworkElement;
+
+            while (parent != null)
+            {
+                T correctlyTyped = parent as T;
+                if (correctlyTyped != null)
+                {
+                    return correctlyTyped;
+                }
+
+                parent = parent.VisualParent as FrameworkElement;
+            }
+
+            return null;
+        }
+
 
         #endregion
 

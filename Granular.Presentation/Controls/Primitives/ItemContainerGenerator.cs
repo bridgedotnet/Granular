@@ -13,7 +13,10 @@ namespace System.Windows.Controls.Primitives
         int ItemsCount { get; }
         FrameworkElement Generate(int index);
         void RemoveRange(int startIndex, int count);
-
+        /// <summary>
+        /// Return the ItemContainerGenerator appropriate for use by the given panel
+        /// </summary>
+        IItemContainerGenerator GetItemContainerGeneratorForPanel(Panel panel);
         DependencyObject ContainerFromItem(object item);
         object ItemFromContainer(DependencyObject container);
         DependencyObject ContainerFromIndex(int index);

@@ -282,5 +282,138 @@ namespace System.Windows.Controls
                 }
             }
         }
+
+        #region Selection
+
+        private bool _syncingIsSelected;                    // Used to prevent unnecessary notifications
+
+        /// <summary>
+        ///     Whether the cell is selected or not.
+        /// </summary>
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+        /// <summary>
+        ///     Represents the IsSelected property.
+        /// </summary>
+        public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataGridCell), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnIsSelectedChanged)));
+
+        private static void OnIsSelectedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            DataGridCell cell = (DataGridCell)sender;
+            bool isSelected = (bool)e.NewValue;
+
+            // There is no reason to notify the DataGrid if IsSelected's value came
+            // from the DataGrid.
+            if (!cell._syncingIsSelected)
+            {
+                DataGrid dataGrid = cell.DataGridOwner;
+                if (dataGrid != null)
+                {
+                    // Notify the DataGrid that a cell's IsSelected property changed
+                    // in case it was done programmatically instead of by the
+                    // DataGrid itself.
+                    // dataGrid.CellIsSelectedChanged(cell, isSelected);
+                }
+            }
+
+            cell.RaiseSelectionChangedEvent(isSelected);
+            cell.UpdateVisualState();
+        }
+
+        /// <summary>
+        ///     Used to synchronize IsSelected with the DataGrid.
+        ///     Prevents unncessary notification back to the DataGrid.
+        /// </summary>
+        internal void SyncIsSelected(bool isSelected)
+        {
+            bool originalValue = _syncingIsSelected;
+            _syncingIsSelected = true;
+            try
+            {
+                IsSelected = isSelected;
+            }
+            finally
+            {
+                _syncingIsSelected = originalValue;
+            }
+        }
+
+        private void RaiseSelectionChangedEvent(bool isSelected)
+        {
+            if (isSelected)
+            {
+                OnSelected(new RoutedEventArgs(SelectedEvent, this));
+            }
+            else
+            {
+                OnUnselected(new RoutedEventArgs(UnselectedEvent, this));
+            }
+        }
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes true.
+        /// </summary>
+        public static readonly RoutedEvent SelectedEvent = EventManager.RegisterRoutedEvent("Selected", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(DataGridCell));
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes true.
+        /// </summary>
+        public event RoutedEventHandler Selected
+        {
+            add
+            {
+                AddHandler(SelectedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(SelectedEvent, value);
+            }
+        }
+
+        /// <summary>
+        ///     Called when IsSelected becomes true. Raises the Selected event.
+        /// </summary>
+        /// <param name="e">Empty event arguments.</param>
+        protected virtual void OnSelected(RoutedEventArgs e)
+        {
+            RaiseEvent(e);
+        }
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes false.
+        /// </summary>
+        public static readonly RoutedEvent UnselectedEvent = EventManager.RegisterRoutedEvent("Unselected", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(DataGridCell));
+
+        /// <summary>
+        ///     Raised when the item's IsSelected property becomes false.
+        /// </summary>
+        public event RoutedEventHandler Unselected
+        {
+            add
+            {
+                AddHandler(UnselectedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(UnselectedEvent, value);
+            }
+        }
+
+        /// <summary>
+        ///     Called when IsSelected becomes false. Raises the Unselected event.
+        /// </summary>
+        /// <param name="e">Empty event arguments.</param>
+        protected virtual void OnUnselected(RoutedEventArgs e)
+        {
+            RaiseEvent(e);
+        }
+
+        #endregion
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="Controls\ClickMode.cs" />
     <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\ComboBoxItem.cs" />
+    <Compile Include="Controls\ContainerTracking.cs" />
     <Compile Include="Controls\DataGrid.cs" />
     <Compile Include="Controls\DataGridBoundColumn.cs" />
     <Compile Include="Controls\DataGridCell.cs" />
@@ -63,12 +64,14 @@
     <Compile Include="Controls\DataGridLengthUnitType.cs" />
     <Compile Include="Controls\DataGridNotificationTarget.cs" />
     <Compile Include="Controls\DataGridRow.cs" />
+    <Compile Include="Controls\DataGridSelectionUnit.cs" />
     <Compile Include="Controls\DataGridTextColumn.cs" />
     <Compile Include="Controls\IProvideDataGridColumn.cs" />
     <Compile Include="Controls\ItemContainerGenerator.cs" />
     <Compile Include="Controls\Primitives\DataGridCellsPresenter.cs" />
     <Compile Include="Controls\Primitives\DataGridColumnHeader.cs" />
     <Compile Include="Controls\Primitives\DataGridColumnHeadersPresenter.cs" />
+    <Compile Include="Controls\Primitives\DataGridRowsPresenter.cs" />
     <Compile Include="Controls\Primitives\MultiSelector.cs" />
     <Compile Include="Controls\DataGridGridLinesVisibility.cs" />
     <Compile Include="Controls\ScrollUnit.cs" />

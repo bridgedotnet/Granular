@@ -73,6 +73,9 @@
     <Compile Include="..\Granular.Presentation\Controls\ComboBoxItem.cs">
       <Link>Controls\ComboBoxItem.cs</Link>
     </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\ContainerTracking.cs">
+      <Link>Controls\ContainerTracking.cs</Link>
+    </Compile>
     <Compile Include="..\Granular.Presentation\Controls\ContentControl.cs">
       <Link>Controls\ContentControl.cs</Link>
     </Compile>
@@ -129,6 +132,9 @@
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\DataGridRow.cs">
       <Link>Controls\DataGridRow.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\DataGridSelectionUnit.cs">
+      <Link>Controls\DataGridSelectionUnit.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\DataGridTextColumn.cs">
       <Link>Controls\DataGridTextColumn.cs</Link>
@@ -201,6 +207,9 @@
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Primitives\DataGridColumnHeadersPresenter.cs">
       <Link>Controls\Primitives\DataGridColumnHeadersPresenter.cs</Link>
+    </Compile>
+    <Compile Include="..\Granular.Presentation\Controls\Primitives\DataGridRowsPresenter.cs">
+      <Link>Controls\Primitives\DataGridRowsPresenter.cs</Link>
     </Compile>
     <Compile Include="..\Granular.Presentation\Controls\Primitives\DragEventArgs.cs">
       <Link>Controls\Primitives\DragEventArgs.cs</Link>

@@ -60,5 +60,15 @@ namespace Granular.Extensions
         {
             return Math.Abs(value - 1.0) < 10.0 * DBL_EPSILON;
         }
+
+        public static bool LessThan(this double value1, double value2)
+        {
+            return (value1 < value2) && !IsClose(value1, value2);
+        }
+
+        public static bool GreaterThan(this double value1, double value2)
+        {
+            return (value1 > value2) && !IsClose(value1, value2);
+        }
     }
 }

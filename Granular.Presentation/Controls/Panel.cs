@@ -16,7 +16,7 @@ namespace System.Windows.Controls
     {
         public UIElementCollection Children { get; private set; }
 
-        public static readonly DependencyProperty IsItemsHostProperty = DependencyProperty.Register("IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(false, (sender, e) => ((Panel)sender).OnIsItemsHostChanged(e)));
+        public static readonly DependencyProperty IsItemsHostProperty = DependencyProperty.Register("IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(false, (sender, e) => ((Panel)sender).OnIsItemsHostChanged(sender, e)));
         public bool IsItemsHost
         {
             get { return (bool)GetValue(IsItemsHostProperty); }
@@ -135,9 +135,23 @@ namespace System.Windows.Controls
             }
         }
 
-        private void OnIsItemsHostChanged(DependencyPropertyChangedEventArgs e)
+        private void OnIsItemsHostChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ItemContainerGenerator = IsItemsHost && TemplatedParent is ItemsControl ? ((ItemsControl)TemplatedParent).ItemContainerGenerator : null;
+
+            Panel panel = (Panel)d;
+
+            panel.OnIsItemsHostChanged((bool)e.OldValue, (bool)e.NewValue);
+        }
+
+        /// <summary>
+        ///     This method is invoked when the IsItemsHost property changes.
+        /// </summary>
+        /// <param name="oldIsItemsHost">The old value of the IsItemsHost property.</param>
+        /// <param name="newIsItemsHost">The new value of the IsItemsHost property.</param>
+        protected virtual void OnIsItemsHostChanged(bool oldIsItemsHost, bool newIsItemsHost)
+        {
+
         }
 
         private void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

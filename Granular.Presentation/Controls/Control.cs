@@ -172,6 +172,14 @@ namespace System.Windows.Controls
             //
         }
 
+        /// <summary>
+        /// Update the current visual state of the control using transitions
+        /// </summary>
+        internal void UpdateVisualState()
+        {
+            UpdateVisualState(true);
+        }
+
         protected override void OnApplyTemplate()
         {
             UpdateVisualState(false);

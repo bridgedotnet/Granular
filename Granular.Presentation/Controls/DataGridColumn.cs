@@ -375,7 +375,7 @@ namespace System.Windows.Controls
 
             if (dataGrid != null && column.IsVisible)
             {
-                // dataGrid.InternalColumns.RedistributeColumnWidthsOnMaxWidthChangeOfColumn(column, (double)e.OldValue);
+                dataGrid.InternalColumns.RedistributeColumnWidthsOnMaxWidthChangeOfColumn(column, (double)e.OldValue);
             }
         }
 
@@ -440,6 +440,22 @@ namespace System.Windows.Controls
             }
 
             return actualWidth;
+        }
+
+        /// <summary>
+        ///     Notifies the column that Width="*" columns have a new actual width.
+        /// </summary>
+        internal void UpdateWidthForStarColumn(double displayWidth, double desiredWidth, double starValue)
+        {
+            DataGridLength width = Width;
+
+            if (!displayWidth.IsClose(width.DisplayValue) ||
+                !desiredWidth.IsClose(width.DesiredValue) ||
+                !width.Value.IsClose(starValue))
+            {
+                SetWidthInternal(new DataGridLength(starValue, width.UnitType, desiredWidth, displayWidth));
+                ActualWidth = displayWidth;
+            }
         }
 
         #endregion
@@ -632,18 +648,18 @@ namespace System.Windows.Controls
                 // sent to the DataGrid.
                 target &= ~DataGridNotificationTarget.Columns;
 
-                //if (e.Property == DataGrid.MaxColumnWidthProperty || e.Property == MaxWidthProperty)
-                //{
-                //    DataGridHelper.TransferProperty(this, MaxWidthProperty);
-                //}
-                //else if (e.Property == DataGrid.MinColumnWidthProperty || e.Property == MinWidthProperty)
-                //{
-                //    DataGridHelper.TransferProperty(this, MinWidthProperty);
-                //}
-                //else if (e.Property == DataGrid.ColumnWidthProperty || e.Property == WidthProperty)
-                //{
-                //    DataGridHelper.TransferProperty(this, WidthProperty);
-                //}
+                if (e.Property == DataGrid.MaxColumnWidthProperty || e.Property == MaxWidthProperty)
+                {
+                    DataGridHelper.TransferProperty(this, MaxWidthProperty);
+                }
+                else if (e.Property == DataGrid.MinColumnWidthProperty || e.Property == MinWidthProperty)
+                {
+                    DataGridHelper.TransferProperty(this, MinWidthProperty);
+                }
+                else if (e.Property == DataGrid.ColumnWidthProperty || e.Property == WidthProperty)
+                {
+                    DataGridHelper.TransferProperty(this, WidthProperty);
+                }
                 //else if (e.Property == DataGrid.ColumnHeaderStyleProperty || e.Property == HeaderStyleProperty)
                 //{
                 //    DataGridHelper.TransferProperty(this, HeaderStyleProperty);
@@ -652,10 +668,10 @@ namespace System.Windows.Controls
                 //{
                 //    DataGridHelper.TransferProperty(this, CellStyleProperty);
                 //}
-                //else if (e.Property == DataGrid.IsReadOnlyProperty || e.Property == IsReadOnlyProperty)
-                //{
-                //    DataGridHelper.TransferProperty(this, IsReadOnlyProperty);
-                //}
+                else if (e.Property == DataGrid.IsReadOnlyProperty || e.Property == IsReadOnlyProperty)
+                {
+                    DataGridHelper.TransferProperty(this, IsReadOnlyProperty);
+                }
                 //else if (e.Property == DataGrid.DragIndicatorStyleProperty || e.Property == DragIndicatorStyleProperty)
                 //{
                 //    DataGridHelper.TransferProperty(this, DragIndicatorStyleProperty);
@@ -724,6 +740,26 @@ namespace System.Windows.Controls
         internal static void NotifyPropertyChangeForRefreshContent(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((DataGridColumn)d).NotifyPropertyChanged(e.Property.Name);
+        }
+
+        /// <summary>
+        ///     Ensures that any properties that may be influenced by a change to the DataGrid are syncronized.
+        /// </summary>
+        internal void SyncProperties()
+        {
+            DataGridHelper.TransferProperty(this, MinWidthProperty);
+            DataGridHelper.TransferProperty(this, MaxWidthProperty);
+            DataGridHelper.TransferProperty(this, WidthProperty);
+
+
+
+            //DataGridHelper.TransferProperty(this, HeaderStyleProperty);
+            //DataGridHelper.TransferProperty(this, CellStyleProperty);
+            DataGridHelper.TransferProperty(this, IsReadOnlyProperty);
+            //DataGridHelper.TransferProperty(this, DragIndicatorStyleProperty);
+            //DataGridHelper.TransferProperty(this, CanUserSortProperty);
+            //DataGridHelper.TransferProperty(this, CanUserReorderProperty);
+            //DataGridHelper.TransferProperty(this, CanUserResizeProperty);
         }
 
     }

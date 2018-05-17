@@ -39,11 +39,11 @@
             <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding StringValues}" SelectedItem="{Binding SelectedStringValue, Mode=TwoWay}"/>
 
 
-            <DataGrid Grid.Row="2" Grid.ColumnSpan="2" Height="200" ItemsSource="{Binding StringValues}" AutoGenerateColumns="False">
+            <DataGrid Grid.Row="2" Grid.ColumnSpan="2" Height="200" Width="270" ItemsSource="{Binding StringValues}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedStringValue, Mode=TwoWay}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Column 1" Width="50" Binding="{Binding}"/>
-                    <DataGridTextColumn Header="Column 2" Width="70" Binding="{Binding}"/>
-                    <DataGridTextColumn Header="Column 3" Width="90" Binding="{Binding}"/>
+                    <DataGridTextColumn Header="Column 1 (*)" Width="*" Binding="{Binding}"/>
+                    <DataGridTextColumn Header="Column 2 (*)" Width="*" Binding="{Binding}"/>
+                    <DataGridTextColumn Header="Column 3 (70)" Width="70" Binding="{Binding}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

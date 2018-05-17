@@ -46,6 +46,15 @@ namespace System.Windows.Controls
             }
         }
 
+        internal ItemsControl Owner
+        {
+            get
+            {
+                ItemsControl owner = TemplatedParent as ItemsControl;
+                return owner;
+            }
+        }
+
         public ItemsPresenter()
         {
             //

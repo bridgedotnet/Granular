@@ -164,7 +164,7 @@ namespace System.Windows.Controls
             //
         }
 
-        private void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+        protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
         {
             if (ItemsSource == null && !GetValueSource(ItemsSourceProperty).IsExpression)
             {
@@ -174,6 +174,47 @@ namespace System.Windows.Controls
             {
                 Items.SetItemsSource(ItemsSource);
             }
+        }
+
+        internal static DependencyObject GetItemsOwnerInternal(DependencyObject element)
+        {
+            ItemsControl temp;
+            return GetItemsOwnerInternal(element, out temp);
+        }
+
+        /// <summary>
+        /// Different from public GetItemsOwner
+        /// Returns ip.TemplatedParent instead of ip.Owner
+        /// More accurate when we want to distinguish if owner is a GroupItem or ItemsControl
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        internal static DependencyObject GetItemsOwnerInternal(DependencyObject element, out ItemsControl itemsControl)
+        {
+            DependencyObject container = null;
+            Panel panel = element as Panel;
+            itemsControl = null;
+
+            if (panel != null && panel.IsItemsHost)
+            {
+                // see if element was generated for an ItemsPresenter
+                ItemsPresenter ip = ItemsPresenter.FromPanel(panel);
+
+                if (ip != null)
+                {
+                    // if so use the element whose style begat the ItemsPresenter
+                    container = ip.TemplatedParent;
+                    itemsControl = ip.Owner;
+                }
+                else
+                {
+                    // otherwise use element's templated parent
+                    container = panel.TemplatedParent;
+                    itemsControl = container as ItemsControl;
+                }
+            }
+
+            return container;
         }
 
         ///<summary>
@@ -223,7 +264,7 @@ namespace System.Windows.Controls
                 if (ip != null)
                 {
                     // if so use the element whose style begat the ItemsPresenter
-                    // container = ip.Owner;
+                    container = ip.Owner;
                 }
                 else
                 {

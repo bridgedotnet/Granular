@@ -89,7 +89,7 @@ namespace System.Windows.Controls
             {
                 container = new GeneratedItemContainer(host.GetContainerForItem(host.View[index]), host.View[index], index);
                 generatedContainers.Add(container);
-                host.PrepareContainerForItem(container.Item, container.Container);              
+                host.PrepareContainerForItem(container.Item, container.Container);
             }
 
             return container.Container;
@@ -111,6 +111,27 @@ namespace System.Windows.Controls
 
                 i++;
             }
+        }
+
+        /// <summary>
+        /// Return the ItemContainerGenerator appropriate for use by the given panel
+        /// </summary>
+        public IItemContainerGenerator GetItemContainerGeneratorForPanel(Panel panel)
+        {
+            if (!panel.IsItemsHost)
+                throw new ArgumentException("Panel is not items host");
+
+            // if panel came from an ItemsPresenter, use its generator
+            ItemsPresenter ip = ItemsPresenter.FromPanel(panel);
+            if (ip != null)
+                return ip.ItemContainerGenerator;
+
+            // if panel came from a style, use the main generator
+            if (panel.TemplatedParent != null)
+                return this;
+
+            // otherwise the panel doesn't have a generator
+            return null;
         }
 
         private void Remove(GeneratedItemContainer container)
