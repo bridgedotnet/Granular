@@ -178,6 +178,62 @@
       <HintPath>..\packages\Retyped.scripthost.2.8.6685\lib\net40\Retyped.scripthost.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\ComboBox.xaml">
+      <Link>Styles\ComboBox.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\TextBlock.xaml">
+      <Link>Styles\TextBlock.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGrid.xaml">
+      <Link>Styles\DataGrid.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGridColumnHeader.xaml">
+      <Link>Styles\DataGridColumnHeader.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGridColumnHeadersPresenter.xaml">
+      <Link>Styles\DataGridColumnHeadersPresenter.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGridCellsPresenter.xaml">
+      <Link>Styles\DataGridCellsPresenter.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGridRow.xaml">
+      <Link>Styles\DataGridRow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Granular.Presentation.Generic\Styles\DataGridCell.xaml">
+      <Link>Styles\DataGridCell.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Bridge.Min.17.0.0\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.17.0.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

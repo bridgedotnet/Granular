@@ -103,6 +103,7 @@ namespace System.Windows.Controls.Primitives
             //
         }
 
+
         private void OnSelectedItemChanged(DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue != null)

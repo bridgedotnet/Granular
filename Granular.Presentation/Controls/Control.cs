@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Documents;
 
@@ -174,6 +170,14 @@ namespace System.Windows.Controls
         protected virtual void UpdateVisualState(bool useTransitions)
         {
             //
+        }
+
+        /// <summary>
+        /// Update the current visual state of the control using transitions
+        /// </summary>
+        internal void UpdateVisualState()
+        {
+            UpdateVisualState(true);
         }
 
         protected override void OnApplyTemplate()

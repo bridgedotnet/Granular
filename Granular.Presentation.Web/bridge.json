@@ -2,6 +2,13 @@
   "fileName": "Granular.Presentation.js",
   "outputBy": "Project",
   "fileNameCasing": "None",
+
+  // Enable browser debugging of C# files.
+  // Default is false.
+  "sourceMap": {
+    "enabled": true
+  }
+
   "rules": {
     "inlineComment": "Plain"
   }

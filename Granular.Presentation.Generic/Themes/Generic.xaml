@@ -6,7 +6,14 @@
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/Button.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ButtonChrome.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/CheckBox.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ComboBox.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ContentControl.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGrid.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGridCell.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGridCellsPresenter.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGridColumnHeader.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGridColumnHeadersPresenter.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/DataGridRow.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/Expander.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/Focus.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ItemsControl.xaml"/>
@@ -16,6 +23,7 @@
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/RadioButton.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ScrollBar.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ScrollViewer.xaml"/>
+        <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/TextBlock.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/TextBox.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/Thumb.xaml"/>
         <ResourceDictionary Source="/Granular.Presentation.Generic;component/Styles/ToggleButton.xaml"/>

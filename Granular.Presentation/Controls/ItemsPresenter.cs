@@ -46,6 +46,15 @@ namespace System.Windows.Controls
             }
         }
 
+        internal ItemsControl Owner
+        {
+            get
+            {
+                ItemsControl owner = TemplatedParent as ItemsControl;
+                return owner;
+            }
+        }
+
         public ItemsPresenter()
         {
             //
@@ -95,6 +104,14 @@ namespace System.Windows.Controls
             ApplyTemplate();
 
             Panel = VisualChildren.FirstOrDefault() as Panel;
+        }
+
+        internal static ItemsPresenter FromPanel(Panel panel)
+        {
+            if (panel == null)
+                return null;
+
+            return panel.TemplatedParent as ItemsPresenter;
         }
     }
 }

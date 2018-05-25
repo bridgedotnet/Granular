@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Granular.Presentation", "Granular.Presentation\Granular.Presentation.csproj", "{14EC400C-E6B9-499B-9970-57B34AF24A4B}"
 EndProject
@@ -49,6 +49,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{B1977ABA
 		NuGet\install.ps1 = NuGet\install.ps1
 		NuGet\ProjectLink.targets.template = NuGet\ProjectLink.targets.template
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Demo", "WebApp.Demo\WebApp.Demo.csproj", "{5BB712B4-F328-4876-9251-511E5E9C8B19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp.Demo", "WpfApp.Demo\WpfApp.Demo.csproj", "{958CBCB3-F7A8-4D01-930A-4525FCD576E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,12 +116,23 @@ Global
 		{F79EE440-E0C4-43A9-8DDC-33D9ED53E570}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F79EE440-E0C4-43A9-8DDC-33D9ED53E570}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F79EE440-E0C4-43A9-8DDC-33D9ED53E570}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB712B4-F328-4876-9251-511E5E9C8B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB712B4-F328-4876-9251-511E5E9C8B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB712B4-F328-4876-9251-511E5E9C8B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB712B4-F328-4876-9251-511E5E9C8B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958CBCB3-F7A8-4D01-930A-4525FCD576E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958CBCB3-F7A8-4D01-930A-4525FCD576E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958CBCB3-F7A8-4D01-930A-4525FCD576E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958CBCB3-F7A8-4D01-930A-4525FCD576E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B1977ABA-D71A-4677-B413-E40B86CBF1CB} = {9B88B295-4071-43DC-9EE8-53DB2BAD0C88}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {28F0F825-CA67-4794-8614-0B347932A348}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Granular.vsmdi

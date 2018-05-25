@@ -123,7 +123,19 @@ namespace System.Windows
 
         public Size ActualSize { get; private set; }
 
-        public Size Size { get; private set; }
+        private Size _size;
+        public Size Size
+        {
+            get { return _size; }
+            private set
+            {
+                if (_size != value)
+                {
+                    _size = value;
+                    OnSizeChanged();
+                }
+            }
+        }
         public Size MinSize { get; private set; }
         public Size MaxSize { get; private set; }
 
@@ -287,7 +299,7 @@ namespace System.Windows
             actualHeightValueEntry = GetValueEntry(ActualHeightPropertyKey);
 
             ActualSize = Size.Empty;
-            Size = Size.Empty;
+            _size = Size.Empty;
             MinSize = Size.Zero;
             MaxSize = Size.Infinity;
 
@@ -456,9 +468,24 @@ namespace System.Windows
             return true;
         }
 
+        /// <summary>
+        /// This virtual is called by FE.ApplyTemplate before it does work to generate the template tree.
+        /// </summary>
+        /// <remarks>
+        /// This virtual is overridden for the following three reasons
+        /// 1. By ContentPresenter/ItemsPresenter to choose the template to be applied in this case.
+        /// 2. By RowPresenter/ColumnHeaderPresenter/InkCanvas to build custom visual trees
+        /// 3. By ScrollViewer/TickBar/ToolBarPanel/Track to hookup bindings to their TemplateParent
+        /// </remarks>
+        internal virtual void OnPreApplyTemplate()
+        {
+        }
+
         protected virtual void OnApplyTemplate()
         {
-            //
+            // Notify the ContentPresenter/ItemsPresenter that we are about to generate the
+            // template tree and allow them to choose the right template to be applied.
+            OnPreApplyTemplate();
         }
 
         protected override void OnVisualParentChanged(Visual oldVisualParent, Visual newVisualParent)
@@ -629,6 +656,11 @@ namespace System.Windows
         private void SetSize()
         {
             Size = new Size(Width, Height);
+        }
+
+        protected virtual void OnSizeChanged()
+        {
+
         }
 
         private void SetMinSize()

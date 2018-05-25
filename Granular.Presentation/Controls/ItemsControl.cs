@@ -164,7 +164,7 @@ namespace System.Windows.Controls
             //
         }
 
-        private void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+        protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
         {
             if (ItemsSource == null && !GetValueSource(ItemsSourceProperty).IsExpression)
             {
@@ -174,6 +174,106 @@ namespace System.Windows.Controls
             {
                 Items.SetItemsSource(ItemsSource);
             }
+        }
+
+        internal static DependencyObject GetItemsOwnerInternal(DependencyObject element)
+        {
+            ItemsControl temp;
+            return GetItemsOwnerInternal(element, out temp);
+        }
+
+        /// <summary>
+        /// Different from public GetItemsOwner
+        /// Returns ip.TemplatedParent instead of ip.Owner
+        /// More accurate when we want to distinguish if owner is a GroupItem or ItemsControl
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        internal static DependencyObject GetItemsOwnerInternal(DependencyObject element, out ItemsControl itemsControl)
+        {
+            DependencyObject container = null;
+            Panel panel = element as Panel;
+            itemsControl = null;
+
+            if (panel != null && panel.IsItemsHost)
+            {
+                // see if element was generated for an ItemsPresenter
+                ItemsPresenter ip = ItemsPresenter.FromPanel(panel);
+
+                if (ip != null)
+                {
+                    // if so use the element whose style begat the ItemsPresenter
+                    container = ip.TemplatedParent;
+                    itemsControl = ip.Owner;
+                }
+                else
+                {
+                    // otherwise use element's templated parent
+                    container = panel.TemplatedParent;
+                    itemsControl = container as ItemsControl;
+                }
+            }
+
+            return container;
+        }
+
+        ///<summary>
+        /// Return the ItemsControl that owns the given container element
+        ///</summary>
+        public static ItemsControl ItemsControlFromItemContainer(DependencyObject container)
+        {
+            UIElement ui = container as UIElement;
+            if (ui == null)
+                return null;
+
+            // ui appeared in items collection
+            ItemsControl ic = LogicalTreeHelper.GetParent(ui) as ItemsControl;
+            if (ic != null)
+            {
+                // this is the right ItemsControl as long as the item
+                // is (or is eligible to be) its own container
+                IGeneratorHost host = ic as IGeneratorHost;
+                if (host.IsItemItsOwnContainer(ui))
+                    return ic;
+                else
+                    return null;
+            }
+
+            ui = ui.LogicalParent;
+
+            return ItemsControl.GetItemsOwner(ui);
+        }
+
+        /// <summary>
+        ///     Returns the ItemsControl for which element is an ItemsHost.
+        ///     More precisely, if element is marked by setting IsItemsHost="true"
+        ///     in the style for an ItemsControl, or if element is a panel created
+        ///     by the ItemsPresenter for an ItemsControl, return that ItemsControl.
+        ///     Otherwise, return null.
+        /// </summary>
+        public static ItemsControl GetItemsOwner(DependencyObject element)
+        {
+            ItemsControl container = null;
+            Panel panel = element as Panel;
+
+            if (panel != null && panel.IsItemsHost)
+            {
+                // see if element was generated for an ItemsPresenter
+                ItemsPresenter ip = ItemsPresenter.FromPanel(panel);
+
+                if (ip != null)
+                {
+                    // if so use the element whose style begat the ItemsPresenter
+                    container = ip.Owner;
+                }
+                else
+                {
+                    // otherwise use element's templated parent
+                    container = panel.TemplatedParent as ItemsControl;
+                }
+            }
+
+            return container;
         }
     }
 }

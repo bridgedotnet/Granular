@@ -11,6 +11,11 @@ namespace System.Windows.Controls
     [ContentProperty("Text")]
     public class TextBlock : FrameworkElement
     {
+        static TextBlock()
+        {
+            FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new StyleKey(typeof(TextBlock))));
+        }
+
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(TextBlock), new FrameworkPropertyMetadata(FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (sender, e) => ((TextBlock)sender).OnTextChanged(e)));
         public string Text
         {

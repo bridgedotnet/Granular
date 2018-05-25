@@ -13,9 +13,13 @@ namespace System.Windows.Controls.Primitives
         int ItemsCount { get; }
         FrameworkElement Generate(int index);
         void RemoveRange(int startIndex, int count);
-
+        /// <summary>
+        /// Return the ItemContainerGenerator appropriate for use by the given panel
+        /// </summary>
+        IItemContainerGenerator GetItemContainerGeneratorForPanel(Panel panel);
         DependencyObject ContainerFromItem(object item);
         object ItemFromContainer(DependencyObject container);
+        DependencyObject ContainerFromIndex(int index);
         int IndexFromContainer(DependencyObject container);
     }
 
@@ -42,6 +46,10 @@ namespace System.Windows.Controls.Primitives
         FrameworkElement GetContainerForItem(object item);
         void PrepareContainerForItem(object item, FrameworkElement container);
         void ClearContainerForItem(object item, FrameworkElement container);
+        /// <summary>
+        /// Return true if the item is (or should be) its own item container
+        /// </summary>
+        bool IsItemItsOwnContainer(object item);
     }
 
     public class ItemsChangedEventArgs : EventArgs
