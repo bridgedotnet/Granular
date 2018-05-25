@@ -50,7 +50,7 @@ namespace Granular.Host.Render
                 }
 
                 radiusX = value;
-                renderQueue.InvokeAsync(() => HtmlElement.SetAttribute("gradientTransform", converter.ToGradientTransformString(RadiusX, RadiusY)));
+                renderQueue.InvokeAsync(() => HtmlElement.setAttribute("gradientTransform", converter.ToGradientTransformString(RadiusX, RadiusY)));
             }
         }
 
@@ -66,7 +66,7 @@ namespace Granular.Host.Render
                 }
 
                 radiusY = value;
-                renderQueue.InvokeAsync(() => HtmlElement.SetAttribute("gradientTransform", converter.ToGradientTransformString(RadiusX, RadiusY)));
+                renderQueue.InvokeAsync(() => HtmlElement.setAttribute("gradientTransform", converter.ToGradientTransformString(RadiusX, RadiusY)));
             }
         }
 

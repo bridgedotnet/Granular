@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge.Html5;
+using static Retyped.dom;
 using System.Windows.Media;
 using Granular.Compatibility.Linq;
 using Granular.Extensions;
@@ -110,7 +110,7 @@ namespace Granular.Host.Render
 
             if (childElement.HtmlElement != null)
             {
-                renderQueue.InvokeAsync(() => HtmlElement.RemoveChild(((HtmlRenderElement)child).HtmlElement));
+                renderQueue.InvokeAsync(() => HtmlElement.removeChild(((HtmlRenderElement)child).HtmlElement));
             }
             else
             {

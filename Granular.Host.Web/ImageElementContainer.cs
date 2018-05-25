@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host
 {
@@ -13,21 +13,21 @@ namespace Granular.Host
 
         public ImageElementContainer()
         {
-            HtmlElement = Document.CreateElement("div");
-            HtmlElement.Style.SetProperty("visibility", "hidden");
-            HtmlElement.Style.SetProperty("overflow", "hidden");
-            HtmlElement.Style.Width = "0px";
-            HtmlElement.Style.Height = "0px";
+            HtmlElement = document.createElement("div");
+            HtmlElement.style.setProperty("visibility", "hidden");
+            HtmlElement.style.setProperty("overflow", "hidden");
+            HtmlElement.style.width = "0px";
+            HtmlElement.style.height = "0px";
         }
 
         public void Add(HTMLElement element)
         {
-            HtmlElement.AppendChild(element);
+            HtmlElement.appendChild(element);
         }
 
         public void Remove(HTMLElement element)
         {
-            HtmlElement.RemoveChild(element);
+            HtmlElement.removeChild(element);
         }
     }
 }

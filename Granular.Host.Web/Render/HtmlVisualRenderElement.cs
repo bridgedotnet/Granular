@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Extensions;
 
 namespace Granular.Host.Render
@@ -255,12 +255,13 @@ namespace Granular.Host.Render
 
         private static HTMLElement CreateHtmlElement(object owner)
         {
-            HTMLElement htmlElement = Document.CreateElement(GetElementTagName(owner));
+            HTMLElement htmlElement = document.createElement(GetElementTagName(owner));
 
             string htmlElementId = GetElementId(owner);
+
             if (!htmlElementId.IsNullOrEmpty())
             {
-                htmlElement.Id = htmlElementId;
+                htmlElement.id = htmlElementId;
             }
 
             return htmlElement;

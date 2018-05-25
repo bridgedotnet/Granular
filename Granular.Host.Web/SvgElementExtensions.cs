@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Host.Render;
 using Granular.Extensions;
 using Granular.Compatibility.Linq;
@@ -32,23 +32,23 @@ namespace Granular.Host
 
         public static void SetSvgSpreadMethod(this HTMLElement element, GradientSpreadMethod spreadMethod, SvgValueConverter converter)
         {
-            element.SetAttribute("spreadMethod", converter.ToSpreadMethodString(spreadMethod));
+            element.setAttribute("spreadMethod", converter.ToSpreadMethodString(spreadMethod));
         }
 
         public static void SetSvgMappingMode(this HTMLElement element, BrushMappingMode mappingMode, SvgValueConverter converter)
         {
-            element.SetAttribute("gradientUnits", converter.ToGradientUnitsString(mappingMode));
+            element.setAttribute("gradientUnits", converter.ToGradientUnitsString(mappingMode));
         }
 
         public static void SetSvgTransform(this HTMLElement element, Matrix transform, SvgValueConverter converter)
         {
             if (transform.IsNullOrIdentity())
             {
-                element.RemoveAttribute("transform");
+                element.removeAttribute("transform");
             }
             else
             {
-                element.SetAttribute("transform", converter.ToMatrixString(transform));
+                element.setAttribute("transform", converter.ToMatrixString(transform));
             }
         }
 
@@ -61,13 +61,13 @@ namespace Granular.Host
         {
             if (size.IsNullOrEmpty())
             {
-                element.RemoveAttribute("width");
-                element.RemoveAttribute("height");
+                element.removeAttribute("width");
+                element.removeAttribute("height");
             }
             else
             {
-                element.SetAttribute("width", converter.ToImplicitValueString(size.Width));
-                element.SetAttribute("height", converter.ToImplicitValueString(size.Height));
+                element.setAttribute("width", converter.ToImplicitValueString(size.Width));
+                element.setAttribute("height", converter.ToImplicitValueString(size.Height));
             }
         }
 
@@ -79,7 +79,7 @@ namespace Granular.Host
 
         public static void SetSvgImageSource(this HTMLElement element, ImageSource imageSource, IRenderElementFactory factory, SvgValueConverter converter)
         {
-            element.SetAttributeNS(SvgDocument.XlinkNamespaceUri, "href", converter.ToImageUrl(imageSource, factory));
+            element.setAttributeNS(SvgDocument.XlinkNamespaceUri, "href", converter.ToImageUrl(imageSource, factory));
         }
 
         public static void SetSvgFill(this HTMLElement element, HtmlBrushRenderResource brush)
@@ -106,7 +106,7 @@ namespace Granular.Host
         {
             if (geometry == null)
             {
-                element.RemoveAttribute("d");
+                element.removeAttribute("d");
             }
             else
             {
@@ -118,11 +118,11 @@ namespace Granular.Host
         {
             if (geometry == null)
             {
-                element.RemoveAttribute("clip-path");
+                element.removeAttribute("clip-path");
             }
             else
             {
-                element.SetAttribute("clip-path", geometry.Uri);
+                element.setAttribute("clip-path", geometry.Uri);
             }
         }
 
@@ -190,11 +190,11 @@ namespace Granular.Host
         {
             if (value.IsNaN())
             {
-                element.RemoveAttribute(attributeName);
+                element.removeAttribute(attributeName);
             }
             else
             {
-                element.SetAttribute(attributeName, converter.ToImplicitValueString(value));
+                element.setAttribute(attributeName, converter.ToImplicitValueString(value));
             }
         }
 
@@ -202,11 +202,11 @@ namespace Granular.Host
         {
             if (value.IsNullOrEmpty())
             {
-                element.RemoveAttribute(attributeName);
+                element.removeAttribute(attributeName);
             }
             else
             {
-                element.SetAttribute(attributeName, value);
+                element.setAttribute(attributeName, value);
             }
         }
 
@@ -214,13 +214,13 @@ namespace Granular.Host
         {
             if (point.IsNullOrEmpty())
             {
-                element.RemoveAttribute(xAttributeName);
-                element.RemoveAttribute(yAttributeName);
+                element.removeAttribute(xAttributeName);
+                element.removeAttribute(yAttributeName);
             }
             else
             {
-                element.SetAttribute(xAttributeName, converter.ToImplicitValueString(point.X));
-                element.SetAttribute(yAttributeName, converter.ToImplicitValueString(point.Y));
+                element.setAttribute(xAttributeName, converter.ToImplicitValueString(point.X));
+                element.setAttribute(yAttributeName, converter.ToImplicitValueString(point.Y));
             }
         }
 
@@ -228,11 +228,11 @@ namespace Granular.Host
         {
             if (brush == null)
             {
-                element.RemoveAttribute(attributeName);
+                element.removeAttribute(attributeName);
             }
             else
             {
-                element.SetAttribute(attributeName, brush.Uri);
+                element.setAttribute(attributeName, brush.Uri);
             }
         }
     }

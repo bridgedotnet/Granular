@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Extensions;
 
 namespace Granular.Host.Render
@@ -58,7 +58,7 @@ namespace Granular.Host.Render
 
                 if (pathHtmlElement != null)
                 {
-                    pathHtmlElement.SetAttribute("d", data);
+                    pathHtmlElement.setAttribute("d", data);
                 }
 
                 DataChanged.Raise(this);
@@ -84,8 +84,8 @@ namespace Granular.Host.Render
 
             string elementName = $"clipPath{svgDefinitionContainer.GetNextId()}";
             this.Uri = $"url(#{elementName})";
-            HtmlElement.SetAttribute("id", elementName);
-            HtmlElement.AppendChild(pathHtmlElement);
+            HtmlElement.setAttribute("id", elementName);
+            HtmlElement.appendChild(pathHtmlElement);
         }
 
         protected override void OnLoad()

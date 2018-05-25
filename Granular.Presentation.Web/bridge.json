@@ -8,5 +8,8 @@
   "sourceMap": {
     "enabled": true
   }
-}
 
+  "rules": {
+    "inlineComment": "Plain"
+  }
+}

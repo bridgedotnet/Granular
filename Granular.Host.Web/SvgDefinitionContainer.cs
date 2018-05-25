@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bridge.Html5;
+using static Retyped.dom;
 using Granular.Host.Render;
 
 namespace Granular.Host
@@ -21,12 +21,12 @@ namespace Granular.Host
             this.renderQueue = renderQueue;
 
             HtmlElement = SvgDocument.CreateElement("svg");
-            HtmlElement.Style.SetProperty("overflow", "hidden");
-            HtmlElement.Style.Width = "0px";
-            HtmlElement.Style.Height = "0px";
+            HtmlElement.style.setProperty("overflow", "hidden");
+            HtmlElement.style.width = "0px";
+            HtmlElement.style.height = "0px";
 
             definitionsElement = SvgDocument.CreateElement("defs");
-            HtmlElement.AppendChild(definitionsElement);
+            HtmlElement.appendChild(definitionsElement);
         }
 
         public int GetNextId()
@@ -37,12 +37,12 @@ namespace Granular.Host
 
         public void Add(HtmlRenderResource svgDefinition)
         {
-            renderQueue.InvokeAsync(() => definitionsElement.AppendChild(svgDefinition.HtmlElement));
+            renderQueue.InvokeAsync(() => definitionsElement.appendChild(svgDefinition.HtmlElement));
         }
 
         public void Remove(HtmlRenderResource svgDefinition)
         {
-            renderQueue.InvokeAsync(() => definitionsElement.RemoveChild(svgDefinition.HtmlElement));
+            renderQueue.InvokeAsync(() => definitionsElement.removeChild(svgDefinition.HtmlElement));
         }
     }
 }

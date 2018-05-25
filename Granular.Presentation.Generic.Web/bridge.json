@@ -1,5 +1,8 @@
 {
-    "fileName":  "Granular.Presentation.Generic.js",
-    "outputBy": "Project",
-    "fileNameCasing": "None",
+  "fileName": "Granular.Presentation.Generic.js",
+  "outputBy": "Project",
+  "fileNameCasing": "None",
+  "rules": {
+    "inlineComment": "Plain"
+  }
 }

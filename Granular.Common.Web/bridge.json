@@ -1,5 +1,8 @@
 {
-    "fileName":  "Granular.Common.js",
-    "outputBy": "Project",
-    "fileNameCasing": "None",
+  "fileName": "Granular.Common.js",
+  "outputBy": "Project",
+  "fileNameCasing": "None",
+  "rules": {
+    "inlineComment": "Plain"
+  }
 }

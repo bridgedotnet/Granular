@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using Bridge.Html5;
+using static Retyped.dom;
 
 namespace Granular.Host.Render
 {
@@ -34,7 +34,7 @@ namespace Granular.Host.Render
             this.converter = converter;
 
             stopElement = SvgDocument.CreateElement("stop");
-            HtmlElement.AppendChild(stopElement);
+            HtmlElement.appendChild(stopElement);
         }
 
         protected override void OnOpacityChanged()
@@ -44,8 +44,8 @@ namespace Granular.Host.Render
 
         private void SetStop()
         {
-            stopElement.SetAttribute("stop-color", converter.ToColorString(Color));
-            stopElement.SetAttribute("stop-opacity", converter.ToImplicitValueString(Opacity * Color.A / 255));
+            stopElement.setAttribute("stop-color", converter.ToColorString(Color));
+            stopElement.setAttribute("stop-opacity", converter.ToImplicitValueString(Opacity * Color.A / 255));
         }
     }
 }

@@ -1,5 +1,8 @@
 {
-    "fileName":  "Granular.UnitTesting.js",
-    "outputBy": "Project",
-    "fileNameCasing": "None",
+  "fileName": "Granular.UnitTesting.js",
+  "outputBy": "Project",
+  "fileNameCasing": "None",
+  "rules": {
+    "inlineComment": "Plain"
+  }
 }

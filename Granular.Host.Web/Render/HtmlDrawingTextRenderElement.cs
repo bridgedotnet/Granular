@@ -63,7 +63,7 @@ namespace Granular.Host.Render
             this.renderQueue = renderQueue;
             this.converter = svgValueConverter;
 
-            HtmlElement.SetAttribute("dy", "1em");
+            HtmlElement.setAttribute("dy", "1em");
         }
 
         protected override void OnLoad()
@@ -101,7 +101,7 @@ namespace Granular.Host.Render
             //HtmlElement.SetSvgMaxWidth(FormattedText.MaxTextWidth, converter);
             //HtmlElement.SetSvgTextAlignment(FormattedText.TextAlignment, converter);
             //HtmlElement.SetSvgTextTrimming(FormattedText.Trimming);
-            HtmlElement.TextContent = FormattedText.Text;
+            HtmlElement.textContent = FormattedText.Text;
         }
     }
 }
